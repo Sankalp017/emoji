@@ -1,17 +1,30 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { EMOJIS, Emoji } from '@/lib/emojis';
 import { shuffle } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './theme-toggle';
 import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
+import confetti from 'canvas-confetti';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Award, BarChart, Flame, Trophy } from 'lucide-react';
 
-const ROUND_DURATION = 5; // 5 seconds
+const ROUND_DURATION = 5;
 const STREAK_BONUS_THRESHOLD = 5;
 const STREAK_BONUS_POINTS = 10;
+
+function AnimatedStat({ value }: { value: number }) {
+  const spring = useSpring(value, { mass: 0.8, stiffness: 100, damping: 15 });
+
+  useEffect(() => {
+    spring.set(value);
+  }, [spring, value]);
+
+  return <motion.span>{spring}</motion.span>;
+}
 
 export function EmojiSprintGame() {
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameOver'>('start');
@@ -25,6 +38,7 @@ export function EmojiSprintGame() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
+  const [flash, setFlash] = useState<'correct' | 'wrong' | null>(null);
 
   const { playCorrect, playWrong, playStart, playGameOver } = useSound();
 
@@ -32,15 +46,29 @@ export function EmojiSprintGame() {
     setHighScore(Number(localStorage.getItem('emoji-sprint-highscore') || 0));
   }, []);
 
+  const triggerConfetti = useCallback(() => {
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (gameState === 'gameOver' && score > 0) {
+      triggerConfetti();
+    }
+  }, [gameState, score, triggerConfetti]);
+
   const nextRound = useCallback(() => {
     setIsCorrect(null);
     setSelectedAnswer(null);
+    setFlash(null);
     
     const newEmoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
     setCurrentEmoji(newEmoji);
 
-    const distractors = EMOJIS.filter(e => e.name !== newEmoji.name)
-      .map(e => e.name);
+    const distractors = EMOJIS.filter(e => e.name !== newEmoji.name).map(e => e.name);
     const shuffledDistractors = shuffle(distractors).slice(0, 3);
     const newOptions = shuffle([...shuffledDistractors, newEmoji.name]);
     setOptions(newOptions);
@@ -57,6 +85,7 @@ export function EmojiSprintGame() {
     if (correct) {
       playCorrect();
       setIsCorrect(true);
+      setFlash('correct');
       setCorrectAnswers(c => c + 1);
       
       const newStreak = streak + 1;
@@ -69,11 +98,11 @@ export function EmojiSprintGame() {
       
       setScore(s => s + points);
       setStreak(newStreak);
-      toast.success("Awesome!", { duration: 1000 });
       setTimeout(nextRound, 1000);
     } else {
       playWrong();
       setIsCorrect(false);
+      setFlash('wrong');
       setStreak(0);
       toast.error(answer ? "Oops!" : "Time's up!", { duration: 1000 });
       setTimeout(() => {
@@ -89,29 +118,20 @@ export function EmojiSprintGame() {
         handleAnswer(null);
         return;
       }
-      const timer = setInterval(() => {
-        setTimeLeft(prev => prev - 0.01);
-      }, 10);
+      const timer = setInterval(() => setTimeLeft(prev => prev - 0.01), 10);
       return () => clearInterval(timer);
     }
   }, [gameState, timeLeft, handleAnswer]);
 
   useEffect(() => {
     if (gameState !== 'playing' || !!selectedAnswer) return;
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (['1', '2', '3', '4'].includes(event.key)) {
-        const index = parseInt(event.key) - 1;
-        if (options[index]) {
-          handleAnswer(options[index]);
-        }
+        handleAnswer(options[parseInt(event.key) - 1]);
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [gameState, options, handleAnswer, selectedAnswer]);
 
   const startGame = () => {
@@ -120,6 +140,7 @@ export function EmojiSprintGame() {
     setStreak(0);
     setCorrectAnswers(0);
     setQuestionsAnswered(0);
+    setFlash(null);
     setGameState('playing');
     nextRound();
   };
@@ -136,16 +157,26 @@ export function EmojiSprintGame() {
       case 'gameOver':
         const accuracy = questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0;
         return (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center flex flex-col items-center gap-4"
-          >
-            <h2 className="text-4xl font-bold">Game Over!</h2>
-            <p className="text-2xl">Your Score: {score}</p>
-            <p className="text-xl">Accuracy: {accuracy}%</p>
-            <p className="text-xl text-muted-foreground">High Score: {highScore}</p>
-            <Button onClick={startGame} size="lg">Play Again</Button>
+          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
+            <Card className="w-full max-w-md text-center">
+              <CardHeader>
+                <CardTitle className="text-4xl font-bold">Game Over!</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center gap-4">
+                <div className="text-6xl font-bold text-primary mb-4">{score}</div>
+                <div className="grid grid-cols-2 gap-4 w-full text-lg">
+                  <div className="flex items-center justify-center gap-2 rounded-lg bg-muted p-3">
+                    <Trophy className="h-6 w-6 text-yellow-500" />
+                    <span>High Score: {highScore}</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 rounded-lg bg-muted p-3">
+                    <BarChart className="h-6 w-6 text-blue-500" />
+                    <span>Accuracy: {accuracy}%</span>
+                  </div>
+                </div>
+                <Button onClick={startGame} size="lg" className="mt-4">Play Again</Button>
+              </CardContent>
+            </Card>
           </motion.div>
         );
       case 'playing':
@@ -161,12 +192,12 @@ export function EmojiSprintGame() {
                 className="w-full flex flex-col items-center gap-8"
               >
                 <div className="relative flex items-center justify-center">
-                   <motion.div
+                  <motion.div
                     className="absolute w-full h-full border-4 border-primary rounded-full"
                     initial={{ scale: 0, opacity: 0.5 }}
                     animate={{ scale: 1, opacity: 0 }}
                     transition={{ duration: ROUND_DURATION, ease: 'linear' }}
-                    key={`${currentEmoji.char}-timer`} 
+                    key={`${currentEmoji.char}-timer`}
                   />
                   <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
@@ -178,21 +209,13 @@ export function EmojiSprintGame() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 w-full max-w-md">
                   {options.map((option, index) => (
-                    <motion.div
-                      key={option}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
+                    <motion.div key={option} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                       <Button
                         onClick={() => handleAnswer(option)}
-                        className={`w-full h-20 text-lg whitespace-normal transition-colors duration-300 relative ${
+                        className={`w-full h-24 text-lg whitespace-normal transition-colors duration-300 relative ${
                           selectedAnswer && option === selectedAnswer
-                            ? isCorrect
-                              ? 'bg-green-500 hover:bg-green-600'
-                              : 'bg-red-500 hover:bg-red-600 animate-shake'
-                            : selectedAnswer && option === currentEmoji.name
-                            ? 'bg-green-500 hover:bg-green-600'
-                            : 'bg-secondary hover:bg-secondary/80'
+                            ? isCorrect ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600 animate-shake'
+                            : selectedAnswer && option === currentEmoji.name ? 'bg-green-500 hover:bg-green-600' : 'bg-secondary hover:bg-secondary/80'
                         }`}
                         disabled={!!selectedAnswer}
                       >
@@ -214,25 +237,30 @@ export function EmojiSprintGame() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center flex flex-col items-center gap-4"
           >
-            <h1 className="text-5xl font-bold tracking-tighter">Emoji Sprint</h1>
-            <p className="text-lg text-muted-foreground">Guess the mood before time runs out!</p>
-            <Button onClick={startGame} size="lg" className="mt-4">
-              Start Game
-            </Button>
+            <h1 className="text-6xl font-bold tracking-tighter">Emoji Sprint</h1>
+            <p className="text-xl text-muted-foreground">Guess the mood before time runs out!</p>
+            <Button onClick={startGame} size="lg" className="mt-6">Start Game</Button>
           </motion.div>
         );
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4 overflow-hidden">
+    <div className={`flex flex-col items-center justify-center min-h-screen text-foreground p-4 overflow-hidden transition-colors duration-500 ${
+      flash === 'correct' ? 'bg-green-500/20' : flash === 'wrong' ? 'bg-red-500/20' : 'bg-background'
+    }`}>
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      <div className="absolute top-4 left-4 flex flex-col sm:flex-row gap-x-4 items-start sm:items-center text-lg font-semibold">
-        <span>Score: {score}</span>
-        <span>Streak: {streak}</span>
-        <span className="text-muted-foreground">High: {highScore}</span>
+      <div className="absolute top-4 left-4 flex flex-col sm:flex-row gap-x-6 items-start sm:items-center text-2xl font-semibold">
+        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
+          <Award className="h-7 w-7 text-yellow-400" />
+          <AnimatedStat value={score} />
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
+          <Flame className={`h-7 w-7 transition-colors ${streak > 0 ? 'text-red-500' : 'text-muted-foreground'}`} />
+          <AnimatedStat value={streak} />
+        </motion.div>
       </div>
       <main className="flex-grow flex items-center justify-center w-full">
         {renderGameState()}
