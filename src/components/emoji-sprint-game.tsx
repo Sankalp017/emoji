@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { EMOJIS, Emoji } from '@/lib/emojis';
 import { shuffle } from '@/lib/utils';
@@ -274,7 +275,14 @@ export function EmojiSprintGame() {
           >
             <h1 className="text-6xl font-bold tracking-tighter">Emoji Sprint</h1>
             <p className="text-xl text-muted-foreground">Guess the mood before time runs out!</p>
-            <Button onClick={startGame} size="lg" className="mt-6">Start Game</Button>
+            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <Button onClick={startGame} size="lg">Start Game</Button>
+              <Button asChild variant="secondary" size="lg">
+                <Link href="/discover">
+                  Discover Emojis
+                </Link>
+              </Button>
+            </div>
           </motion.div>
         );
     }
