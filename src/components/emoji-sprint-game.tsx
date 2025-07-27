@@ -215,7 +215,7 @@ export function EmojiSprintGame() {
                         className={`w-full h-24 text-xl font-semibold whitespace-normal transition-colors duration-300 relative focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                           selectedAnswer && option === selectedAnswer
                             ? isCorrect ? 'bg-green-500 hover:bg-green-600 text-primary-foreground' : 'bg-red-500 hover:bg-red-600 text-primary-foreground animate-shake'
-                            : selectedAnswer && option === currentEmoji.name ? 'bg-green-500 hover:bg-green-600 text-primary-foreground' : 'bg-secondary hover:bg-secondary/80'
+                            : selectedAnswer && option === currentEmoji.name ? 'bg-green-500 hover:bg-green-600 text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                         }`}
                         disabled={!!selectedAnswer}
                       >
