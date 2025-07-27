@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { EMOJIS, Emoji } from '@/lib/emojis';
 import { shuffle } from '@/lib/utils';
@@ -39,6 +39,7 @@ export function EmojiSprintGame() {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [flash, setFlash] = useState<'correct' | 'wrong' | null>(null);
+  const [usedEmojis, setUsedEmojis] = useState<string[]>([]);
 
   const { playCorrect, playWrong, playStart, playGameOver } = useSound();
 
@@ -64,16 +65,43 @@ export function EmojiSprintGame() {
     setIsCorrect(null);
     setSelectedAnswer(null);
     setFlash(null);
-    
-    const newEmoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-    setCurrentEmoji(newEmoji);
 
-    const distractors = EMOJIS.filter(e => e.name !== newEmoji.name).map(e => e.name);
-    const shuffledDistractors = shuffle(distractors).slice(0, 3);
-    const newOptions = shuffle([...shuffledDistractors, newEmoji.name]);
+    let availableEmojis = EMOJIS.filter(e => !usedEmojis.includes(e.char));
+
+    if (availableEmojis.length < 4) {
+      availableEmojis = EMOJIS;
+      setUsedEmojis([]);
+      if (gameState === 'playing') {
+        toast.success("You've seen all the emojis! Starting over.");
+      }
+    }
+
+    const newEmoji = availableEmojis[Math.floor(Math.random() * availableEmojis.length)];
+    setCurrentEmoji(newEmoji);
+    setUsedEmojis(prev => [...prev, newEmoji.char]);
+
+    const otherEmojis = EMOJIS.filter(e => e.char !== newEmoji.char);
+    const mainKeywords = newEmoji.name.toLowerCase().split(' ').filter(kw => kw.length > 3);
+
+    const similarDistractors = otherEmojis
+      .map(e => {
+        const distractorKeywords = e.name.toLowerCase().split(' ');
+        const commonKeywords = mainKeywords.filter(kw => distractorKeywords.includes(kw));
+        return { name: e.name, score: commonKeywords.length };
+      })
+      .filter(e => e.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(e => e.name);
+
+    const randomDistractors = shuffle(otherEmojis.map(e => e.name))
+      .filter(name => !similarDistractors.includes(name));
+
+    const finalDistractors = [...similarDistractors, ...randomDistractors].slice(0, 3);
+
+    const newOptions = shuffle([...finalDistractors, newEmoji.name]);
     setOptions(newOptions);
     setTimeLeft(ROUND_DURATION);
-  }, []);
+  }, [usedEmojis, gameState]);
 
   const handleAnswer = useCallback((answer: string | null) => {
     if (selectedAnswer) return;
@@ -141,9 +169,16 @@ export function EmojiSprintGame() {
     setCorrectAnswers(0);
     setQuestionsAnswered(0);
     setFlash(null);
+    setUsedEmojis([]);
+    setCurrentEmoji(null);
     setGameState('playing');
-    nextRound();
   };
+
+  useEffect(() => {
+    if (gameState === 'playing' && currentEmoji === null) {
+      nextRound();
+    }
+  }, [gameState, currentEmoji, nextRound]);
 
   useEffect(() => {
     if (score > highScore) {
