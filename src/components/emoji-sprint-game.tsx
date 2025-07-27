@@ -212,10 +212,10 @@ export function EmojiSprintGame() {
                     <motion.div key={option} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                       <Button
                         onClick={() => handleAnswer(option)}
-                        className={`w-full h-24 text-lg whitespace-normal transition-colors duration-300 relative ${
+                        className={`w-full h-24 text-xl font-semibold whitespace-normal transition-colors duration-300 relative focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                           selectedAnswer && option === selectedAnswer
-                            ? isCorrect ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600 animate-shake'
-                            : selectedAnswer && option === currentEmoji.name ? 'bg-green-500 hover:bg-green-600' : 'bg-secondary hover:bg-secondary/80'
+                            ? isCorrect ? 'bg-green-500 hover:bg-green-600 text-primary-foreground' : 'bg-red-500 hover:bg-red-600 text-primary-foreground animate-shake'
+                            : selectedAnswer && option === currentEmoji.name ? 'bg-green-500 hover:bg-green-600 text-primary-foreground' : 'bg-secondary hover:bg-secondary/80'
                         }`}
                         disabled={!!selectedAnswer}
                       >
