@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Award, BarChart, Flame, Trophy } from 'lucide-react';
+import { Award, BarChart, Flame, Trophy, X } from 'lucide-react';
 
 const ROUND_DURATION = 5;
 const STREAK_BONUS_THRESHOLD = 5;
@@ -175,6 +175,10 @@ export function EmojiSprintGame() {
     setGameState('playing');
   };
 
+  const quitGame = () => {
+    setGameState('start');
+  };
+
   useEffect(() => {
     if (gameState === 'playing' && currentEmoji === null) {
       nextRound();
@@ -261,6 +265,10 @@ export function EmojiSprintGame() {
                     </motion.div>
                   ))}
                 </div>
+                <Button variant="ghost" onClick={quitGame}>
+                  <X className="mr-2 h-4 w-4" />
+                  Quit
+                </Button>
               </motion.div>
             )}
           </AnimatePresence>
