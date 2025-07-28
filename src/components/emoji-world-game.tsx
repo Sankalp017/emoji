@@ -10,8 +10,8 @@ import { ThemeToggle } from './theme-toggle';
 import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Award, BarChart, Crown } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Award, BarChart, Crown, Gamepad2, BookOpen, Compass } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const ROUND_DURATION = 5;
@@ -25,6 +25,18 @@ function AnimatedStat({ value }: { value: number }) {
 
   return <motion.span>{spring}</motion.span>;
 }
+
+const BackgroundEmoji = ({ emoji, style }: { emoji: string, style: React.CSSProperties }) => (
+  <motion.span
+    className="absolute text-4xl opacity-20 dark:opacity-10"
+    style={style}
+    initial={{ y: '100vh', opacity: 0, scale: 0.5 }}
+    animate={{ y: '-10vh', opacity: [0, 1, 0], scale: 1 }}
+    transition={{ duration: Math.random() * 10 + 10, repeat: Infinity, repeatType: 'loop', ease: 'linear' }}
+  >
+    {emoji}
+  </motion.span>
+);
 
 export function EmojiWorldGame() {
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameOver'>('start');
@@ -277,28 +289,48 @@ export function EmojiWorldGame() {
         );
       case 'start':
       default:
+        const backgroundEmojis = ["😀", "🚀", "💖", "🎉", "🌍", "💡", "😂", "👍", "🔥", "👑"];
         return (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center flex flex-col items-center gap-4"
-          >
-            <h1 className="text-6xl font-bold tracking-tighter">Emoji World</h1>
-            <p className="text-xl text-muted-foreground">Explore emojis and test your knowledge in a race against time!</p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Button onClick={startGame} size="lg">Start Game</Button>
-              <Button asChild variant="secondary" size="lg">
-                <Link href="/discover">
-                  Discover Emojis
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="lg">
-                <Link href="/history">
-                  Emoji History
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
+          <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden">
+            {backgroundEmojis.map((emoji, i) => (
+              <BackgroundEmoji key={i} emoji={emoji} style={{ left: `${i * 10}%`, animationDelay: `${i * 2}s` }} />
+            ))}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center flex flex-col items-center gap-4 z-10"
+            >
+              <h1 className="text-6xl font-bold tracking-tighter">Emoji World</h1>
+              <p className="text-xl text-muted-foreground max-w-md">Explore, play, and learn the story behind our favorite icons.</p>
+              <div className="grid md:grid-cols-3 gap-6 mt-6 w-full max-w-4xl">
+                <motion.div whileHover={{ y: -5, scale: 1.02 }} className="h-full">
+                  <Card onClick={startGame} className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 hover:border-primary transition-colors">
+                    <span className="text-6xl mb-4">🎮</span>
+                    <CardTitle>Emoji Sprint</CardTitle>
+                    <CardDescription className="mt-2">Test your knowledge in a race against time.</CardDescription>
+                  </Card>
+                </motion.div>
+                <motion.div whileHover={{ y: -5, scale: 1.02 }} className="h-full">
+                  <Link href="/discover" className="h-full">
+                    <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 hover:border-primary transition-colors">
+                      <span className="text-6xl mb-4">🔍</span>
+                      <CardTitle>Emoji Explorer</CardTitle>
+                      <CardDescription className="mt-2">Browse and search through every emoji.</CardDescription>
+                    </Card>
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ y: -5, scale: 1.02 }} className="h-full">
+                  <Link href="/history" className="h-full">
+                    <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 hover:border-primary transition-colors">
+                      <span className="text-6xl mb-4">📜</span>
+                      <CardTitle>The Story of Emoji</CardTitle>
+                      <CardDescription className="mt-2">Learn the history of our favorite icons.</CardDescription>
+                    </Card>
+                  </Link>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
         );
     }
   };
@@ -307,10 +339,10 @@ export function EmojiWorldGame() {
     <div className={`flex flex-col items-center justify-center min-h-screen text-foreground p-4 overflow-hidden transition-colors duration-500 ${
       flash === 'correct' ? 'bg-green-500/20' : flash === 'wrong' ? 'bg-red-500/20' : 'bg-background'
     }`}>
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 z-20">
         <ThemeToggle />
       </div>
-      <div className="absolute top-4 left-4 flex flex-col sm:flex-row gap-x-6 items-start sm:items-center text-2xl font-semibold">
+      <div className="absolute top-4 left-4 flex flex-col sm:flex-row gap-x-6 items-start sm:items-center text-2xl font-semibold z-20">
         <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
           <Award className="h-7 w-7 text-yellow-400" />
           <AnimatedStat value={score} />

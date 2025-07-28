@@ -232,7 +232,7 @@ export default function HistoryPage() {
             <p className="text-xl text-muted-foreground max-w-3xl">
               The <Highlight>Unicode Consortium's</Highlight> standardization in 2010 and <Highlight>Apple's</Highlight> iOS keyboard in 2011 launched emojis into a worldwide phenomenon. By 2015, they were so popular that one became Oxford Dictionary's Word of the Year.
             </p>
-            <Card className="w-full max-w-sm text-center border-primary border-2 shadow-lg shadow-primary/20">
+            <Card className="w-full max-w-sm text-center shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl">Word of the Year 2015</CardTitle>
               </CardHeader>
@@ -327,10 +327,8 @@ export default function HistoryPage() {
           >
             <span className="text-7xl">🙏</span>
             <h2 className="text-5xl font-bold tracking-tighter">More Than Just Icons</h2>
-            <p className="text-2xl text-foreground max-w-2xl font-semibold">
-              Emojis are a modern reflection of our oldest need:
-              <br />
-              <span className="text-primary text-3xl mt-2 block">To be seen. To be felt. To connect.</span>
+            <p className="text-xl text-muted-foreground max-w-3xl">
+              From tribal paintings to digital feelings, emojis are part of an ongoing evolution in human expression. They aren't just cute icons; they're a modern reflection of our oldest need: <Highlight>to be seen, to be felt, and to connect.</Highlight>
             </p>
             <Button size="lg" className="mt-8" asChild>
               <Link href="/">
