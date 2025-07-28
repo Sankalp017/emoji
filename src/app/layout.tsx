@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Emoji Sprint",
-  description: "A fast-paced emoji guessing game.",
+  title: "Emoji World",
+  description: "Explore emojis and test your knowledge in a race against time!",
 };
 
 export default function RootLayout({

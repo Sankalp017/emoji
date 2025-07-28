@@ -26,7 +26,7 @@ function AnimatedStat({ value }: { value: number }) {
   return <motion.span>{spring}</motion.span>;
 }
 
-export function EmojiSprintGame() {
+export function EmojiWorldGame() {
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameOver'>('start');
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
@@ -283,8 +283,8 @@ export function EmojiSprintGame() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center flex flex-col items-center gap-4"
           >
-            <h1 className="text-6xl font-bold tracking-tighter">Emoji Sprint</h1>
-            <p className="text-xl text-muted-foreground">Guess the mood before time runs out!</p>
+            <h1 className="text-6xl font-bold tracking-tighter">Emoji World</h1>
+            <p className="text-xl text-muted-foreground">Explore emojis and test your knowledge in a race against time!</p>
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
               <Button onClick={startGame} size="lg">Start Game</Button>
               <Button asChild variant="secondary" size="lg">

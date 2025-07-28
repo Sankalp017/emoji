@@ -1,5 +1,5 @@
-import { EmojiSprintGame } from "@/components/emoji-sprint-game";
+import { EmojiWorldGame } from "@/components/emoji-world-game";
 
 export default function Home() {
-  return <EmojiSprintGame />;
+  return <EmojiWorldGame />;
 }

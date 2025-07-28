@@ -313,7 +313,7 @@ export default function HistoryPage() {
             </p>
             <Button size="lg" className="mt-4" asChild>
               <Link href="/">
-                Play Emoji Sprint
+                Play Emoji World
               </Link>
             </Button>
           </HistorySection>
