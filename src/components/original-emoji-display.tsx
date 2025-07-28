@@ -24,8 +24,7 @@ const originalEmojis = [
   { src: "e-49B.png", name: "Yen" },
 ];
 
-const baseUrl =
-  "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/docomo/20/";
+const baseUrl = "https://em-content.zobj.net/thumbs/120/docomo/20/";
 
 export function OriginalEmojiDisplay() {
   return (
