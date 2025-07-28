@@ -42,7 +42,6 @@ export function OriginalEmojiDisplay() {
                   alt={emoji.name}
                   width={40}
                   height={40}
-                  unoptimized
                   className="pixelated"
                 />
               </motion.div>
