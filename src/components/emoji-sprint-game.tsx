@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Award, BarChart, Flame, Trophy, X } from 'lucide-react';
+import { Award, BarChart, Flame, Home, RefreshCw, Trophy, X } from 'lucide-react';
 
 const ROUND_DURATION = 5;
 const STREAK_BONUS_THRESHOLD = 5;
@@ -202,8 +202,8 @@ export function EmojiSprintGame() {
               <CardHeader>
                 <CardTitle className="text-4xl font-bold">Game Over!</CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col items-center gap-4">
-                <div className="text-6xl font-bold text-primary mb-4">{score}</div>
+              <CardContent className="flex flex-col items-center gap-6">
+                <div className="text-6xl font-bold text-primary">{score}</div>
                 <div className="grid grid-cols-2 gap-4 w-full text-lg">
                   <div className="flex items-center justify-center gap-2 rounded-lg bg-muted p-3">
                     <Trophy className="h-6 w-6 text-yellow-500" />
@@ -214,7 +214,16 @@ export function EmojiSprintGame() {
                     <span>Accuracy: {accuracy}%</span>
                   </div>
                 </div>
-                <Button onClick={startGame} size="lg" className="mt-4">Play Again</Button>
+                <div className="flex w-full gap-4 mt-2">
+                  <Button onClick={quitGame} size="lg" variant="outline" className="w-full">
+                    <Home className="mr-2 h-5 w-5" />
+                    Main Menu
+                  </Button>
+                  <Button onClick={startGame} size="lg" className="w-full">
+                    <RefreshCw className="mr-2 h-5 w-5" />
+                    Play Again
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
