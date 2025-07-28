@@ -11,10 +11,28 @@ import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Award, BarChart, Crown, Gamepad2, BookOpen, Compass } from 'lucide-react';
+import { Award, BarChart, Crown } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const ROUND_DURATION = 5;
+
+const BackgroundEmoji = ({ emoji, duration, size, style }: { emoji: string, duration: number, size: number, style: React.CSSProperties }) => (
+  <motion.span
+    className="absolute opacity-10 dark:opacity-5 pointer-events-none"
+    style={{ ...style, fontSize: `${size}rem` }}
+    initial={{ y: '110vh', x: '-50%', opacity: 0 }}
+    animate={{ y: '-10vh', opacity: [0, 1, 1, 0] }}
+    transition={{ 
+      duration, 
+      repeat: Infinity, 
+      repeatType: 'loop', 
+      ease: 'linear',
+      delay: Math.random() * duration
+    }}
+  >
+    {emoji}
+  </motion.span>
+);
 
 function AnimatedStat({ value }: { value: number }) {
   const spring = useSpring(value, { mass: 0.8, stiffness: 100, damping: 15 });
@@ -25,18 +43,6 @@ function AnimatedStat({ value }: { value: number }) {
 
   return <motion.span>{spring}</motion.span>;
 }
-
-const BackgroundEmoji = ({ emoji, style }: { emoji: string, style: React.CSSProperties }) => (
-  <motion.span
-    className="absolute text-4xl opacity-20 dark:opacity-10"
-    style={style}
-    initial={{ y: '100vh', opacity: 0, scale: 0.5 }}
-    animate={{ y: '-10vh', opacity: [0, 1, 0], scale: 1 }}
-    transition={{ duration: Math.random() * 10 + 10, repeat: Infinity, repeatType: 'loop', ease: 'linear' }}
-  >
-    {emoji}
-  </motion.span>
-);
 
 export function EmojiWorldGame() {
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameOver'>('start');
@@ -54,6 +60,16 @@ export function EmojiWorldGame() {
   const [isTimeUp, setIsTimeUp] = useState(false);
 
   const { playCorrect, playWrong, playStart, playGameOver } = useSound();
+
+  const backgroundEmojis = React.useMemo(() => {
+    const shuffled = shuffle(EMOJIS);
+    return Array.from({ length: 40 }).map((_, i) => ({
+        char: shuffled[i % shuffled.length].char,
+        left: `${Math.random() * 100}%`,
+        duration: Math.random() * 20 + 15, // 15 to 35 seconds
+        size: Math.random() * 2.5 + 1.5, // 1.5rem to 4rem
+    }));
+  }, []);
 
   useEffect(() => {
     setHighScore(Number(localStorage.getItem('emoji-sprint-highscore') || 0));
@@ -289,39 +305,54 @@ export function EmojiWorldGame() {
         );
       case 'start':
       default:
-        const backgroundEmojis = ["😀", "🚀", "💖", "🎉", "🌍", "💡", "😂", "👍", "🔥", "👑"];
         return (
           <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            {backgroundEmojis.map((emoji, i) => (
-              <BackgroundEmoji key={i} emoji={emoji} style={{ left: `${i * 10}%`, animationDelay: `${i * 2}s` }} />
-            ))}
+            <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
+              {backgroundEmojis.map((emoji, i) => (
+                <BackgroundEmoji
+                  key={i}
+                  emoji={emoji.char}
+                  duration={emoji.duration}
+                  size={emoji.size}
+                  style={{ left: emoji.left }}
+                />
+              ))}
+            </div>
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center flex flex-col items-center gap-4 z-10"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-center flex flex-col items-center gap-4 z-10 p-4"
             >
-              <h1 className="text-6xl font-bold tracking-tighter">Emoji World</h1>
-              <p className="text-xl text-muted-foreground max-w-md">Explore, play, and learn the story behind our favorite icons.</p>
-              <div className="grid md:grid-cols-3 gap-6 mt-6 w-full max-w-4xl">
-                <motion.div whileHover={{ y: -5, scale: 1.02 }} className="h-full">
-                  <Card onClick={startGame} className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 hover:border-primary transition-colors">
+              <h1 className="text-7xl md:text-8xl font-bold tracking-tighter bg-gradient-to-br from-primary via-primary/80 to-primary bg-clip-text text-transparent dark:from-primary dark:via-primary/60 dark:to-primary">
+                Emoji World
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-md">
+                Explore, play, and learn the story behind our favorite icons.
+              </p>
+              <div className="grid md:grid-cols-3 gap-6 mt-8 w-full max-w-5xl">
+                <motion.div whileHover={{ y: -8, scale: 1.03 }} className="h-full">
+                  <Card 
+                    onClick={startGame} 
+                    className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-background/60 backdrop-blur-sm border-border/30 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/20"
+                  >
                     <span className="text-6xl mb-4">🎮</span>
                     <CardTitle>Emoji Sprint</CardTitle>
                     <CardDescription className="mt-2">Test your knowledge in a race against time.</CardDescription>
                   </Card>
                 </motion.div>
-                <motion.div whileHover={{ y: -5, scale: 1.02 }} className="h-full">
-                  <Link href="/discover" className="h-full">
-                    <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 hover:border-primary transition-colors">
+                <motion.div whileHover={{ y: -8, scale: 1.03 }} className="h-full">
+                  <Link href="/discover" className="h-full block">
+                    <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-background/60 backdrop-blur-sm border-border/30 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/20">
                       <span className="text-6xl mb-4">🔍</span>
                       <CardTitle>Emoji Explorer</CardTitle>
                       <CardDescription className="mt-2">Browse and search through every emoji.</CardDescription>
                     </Card>
                   </Link>
                 </motion.div>
-                <motion.div whileHover={{ y: -5, scale: 1.02 }} className="h-full">
-                  <Link href="/history" className="h-full">
-                    <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 hover:border-primary transition-colors">
+                <motion.div whileHover={{ y: -8, scale: 1.03 }} className="h-full">
+                  <Link href="/history" className="h-full block">
+                    <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-background/60 backdrop-blur-sm border-border/30 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/20">
                       <span className="text-6xl mb-4">📜</span>
                       <CardTitle>The Story of Emoji</CardTitle>
                       <CardDescription className="mt-2">Learn the history of our favorite icons.</CardDescription>
