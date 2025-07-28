@@ -151,11 +151,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-@layer utilities {
-  .pixelated {
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-  }
-}

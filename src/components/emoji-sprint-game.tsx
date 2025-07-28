@@ -4,17 +4,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { EMOJIS, Emoji } from '@/lib/emojis';
-import { cn, shuffle } from '@/lib/utils';
+import { shuffle } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './theme-toggle';
 import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Award, BarChart, Trophy, X, Rocket, Compass, BookOpen } from 'lucide-react';
-import { FloatingEmojis } from './floating-emojis';
+import { Award, BarChart, Flame, Trophy } from 'lucide-react';
 
 const ROUND_DURATION = 5;
+const STREAK_BONUS_THRESHOLD = 5;
+const STREAK_BONUS_POINTS = 10;
 
 function AnimatedStat({ value }: { value: number }) {
   const spring = useSpring(value, { mass: 0.8, stiffness: 100, damping: 15 });
@@ -29,6 +30,7 @@ function AnimatedStat({ value }: { value: number }) {
 export function EmojiSprintGame() {
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameOver'>('start');
   const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [currentEmoji, setCurrentEmoji] = useState<Emoji | null>(null);
   const [options, setOptions] = useState<string[]>([]);
@@ -115,21 +117,29 @@ export function EmojiSprintGame() {
       setFlash('correct');
       setCorrectAnswers(c => c + 1);
       
-      const points = 10;
+      const newStreak = streak + 1;
+      let points = 5 + streak;
+      
+      if (newStreak > 0 && newStreak % STREAK_BONUS_THRESHOLD === 0) {
+        points += STREAK_BONUS_POINTS;
+        toast.info(`+${STREAK_BONUS_POINTS} Streak Bonus!`, { duration: 1500 });
+      }
+      
       setScore(s => s + points);
-
+      setStreak(newStreak);
       setTimeout(nextRound, 1000);
     } else {
       playWrong();
       setIsCorrect(false);
       setFlash('wrong');
+      setStreak(0);
       toast.error(answer ? "Oops!" : "Time's up!", { duration: 1000 });
       setTimeout(() => {
         setGameState('gameOver');
         playGameOver();
       }, 1200);
     }
-  }, [currentEmoji, nextRound, playCorrect, playGameOver, playWrong, selectedAnswer]);
+  }, [currentEmoji, nextRound, playCorrect, playGameOver, playWrong, selectedAnswer, streak]);
 
   useEffect(() => {
     if (gameState === 'playing') {
@@ -156,16 +166,13 @@ export function EmojiSprintGame() {
   const startGame = () => {
     playStart();
     setScore(0);
+    setStreak(0);
     setCorrectAnswers(0);
     setQuestionsAnswered(0);
     setFlash(null);
     setUsedEmojis([]);
     setCurrentEmoji(null);
     setGameState('playing');
-  };
-
-  const quitGame = () => {
-    setGameState('start');
   };
 
   useEffect(() => {
@@ -203,10 +210,7 @@ export function EmojiSprintGame() {
                     <span>Accuracy: {accuracy}%</span>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                  <Button onClick={startGame} size="lg">Play Again</Button>
-                  <Button onClick={quitGame} variant="secondary" size="lg">Main Menu</Button>
-                </div>
+                <Button onClick={startGame} size="lg" className="mt-4">Play Again</Button>
               </CardContent>
             </Card>
           </motion.div>
@@ -257,10 +261,6 @@ export function EmojiSprintGame() {
                     </motion.div>
                   ))}
                 </div>
-                <Button variant="ghost" onClick={quitGame}>
-                  <X className="mr-2 h-4 w-4" />
-                  Quit
-                </Button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -269,86 +269,47 @@ export function EmojiSprintGame() {
       default:
         return (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center flex flex-col items-center justify-center gap-8 w-full h-full"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center flex flex-col items-center gap-4"
           >
-            <div className="relative flex flex-col items-center gap-4">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tighter text-white"
-              >
-                Emoji Sprint
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="text-lg md:text-xl text-gray-400 max-w-lg"
-              >
-                A fast-paced guessing game to test your emoji knowledge and speed.
-              </motion.p>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
-              <Button onClick={startGame} size="lg" className="text-lg px-8 py-6">
-                <Rocket className="mr-2 h-5 w-5" />
-                Start Game
-              </Button>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-              className="flex gap-6 mt-8"
-            >
-              <Button asChild variant="link" className="text-gray-400 hover:text-white">
+            <h1 className="text-6xl font-bold tracking-tighter">Emoji Sprint</h1>
+            <p className="text-xl text-muted-foreground">Guess the mood before time runs out!</p>
+            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <Button onClick={startGame} size="lg">Start Game</Button>
+              <Button asChild variant="secondary" size="lg">
                 <Link href="/discover">
-                  <Compass className="mr-2 h-4 w-4" />
-                  Emoji Explorer
+                  Discover Emojis
                 </Link>
               </Button>
-              <Button asChild variant="link" className="text-gray-400 hover:text-white">
+              <Button asChild variant="secondary" size="lg">
                 <Link href="/history">
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  The Story of Emoji
+                  Emoji History
                 </Link>
               </Button>
-            </motion.div>
+            </div>
           </motion.div>
         );
     }
   };
 
   return (
-    <div className={cn(
-      "flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden transition-colors duration-500 relative",
-      gameState === 'start' ? 'bg-black text-gray-100 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]' : 'bg-background text-foreground',
-      flash === 'correct' ? 'bg-green-500/20' : undefined,
-      flash === 'wrong' ? 'bg-red-500/20' : undefined
-    )}>
-      {gameState === 'start' && <FloatingEmojis />}
+    <div className={`flex flex-col items-center justify-center min-h-screen text-foreground p-4 overflow-hidden transition-colors duration-500 ${
+      flash === 'correct' ? 'bg-green-500/20' : flash === 'wrong' ? 'bg-red-500/20' : 'bg-background'
+    }`}>
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      {gameState === 'playing' && (
-        <div className="absolute top-4 left-4">
-          <Card>
-            <CardContent className="p-3 flex items-center gap-3">
-              <Award className="h-8 w-8 text-yellow-400" />
-              <div className="text-3xl font-bold tabular-nums">
-                <AnimatedStat value={score} />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      <div className="absolute top-4 left-4 flex flex-col sm:flex-row gap-x-6 items-start sm:items-center text-2xl font-semibold">
+        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
+          <Award className="h-7 w-7 text-yellow-400" />
+          <AnimatedStat value={score} />
+        </motion.div>
+        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
+          <Flame className={`h-7 w-7 transition-colors ${streak > 0 ? 'text-red-500' : 'text-muted-foreground'}`} />
+          <AnimatedStat value={streak} />
+        </motion.div>
+      </div>
       <main className="flex-grow flex items-center justify-center w-full">
         {renderGameState()}
       </main>

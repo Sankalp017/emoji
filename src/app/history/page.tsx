@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import {
   ArrowLeft,
-  ArrowRight,
+  Volume2,
+  VolumeX,
   Hand,
   Pyramid,
   MessageCircle,
@@ -14,11 +14,6 @@ import {
   Sparkles,
   Bot,
   Users,
-  Gavel,
-  Scale,
-  Factory,
-  Palette,
-  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,82 +26,99 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-const TimelineItem = ({
-  icon: Icon,
-  title,
+// A custom hook to handle speech synthesis
+function useNarration() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
+
+  useEffect(() => {
+    const handleVoicesChanged = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const femaleVoice =
+        voices.find(
+          (v) => v.name.includes("Female") && v.lang.startsWith("en")
+        ) || voices.find((v) => v.lang.startsWith("en-US")) || voices[0];
+      setVoice(femaleVoice || null);
+    };
+
+    window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
+    handleVoicesChanged(); // Initial load
+
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  const toggleNarration = () => {
+    setIsEnabled((prev) => {
+      if (!prev === false) {
+        window.speechSynthesis.cancel();
+      }
+      return !prev;
+    });
+  };
+
+  const speak = (text: string) => {
+    if (isEnabled && voice) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = voice;
+      utterance.pitch = 1;
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  return { isEnabled, toggleNarration, speak };
+}
+
+// A reusable section component to handle animations and narration
+const HistorySection = ({
   children,
+  narrationText,
+  speak,
 }: {
-  icon: React.ElementType;
-  title: string;
   children: React.ReactNode;
+  narrationText: string;
+  speak: (text: string) => void;
 }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+
+  useEffect(() => {
+    if (isInView) {
+      speak(narrationText);
+    }
+  }, [isInView, narrationText, speak]);
+
   return (
-    <motion.div
-      className="relative pl-16 sm:pl-20 pb-16"
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
+    <motion.section
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen w-full max-w-4xl mx-auto flex flex-col items-center justify-center text-center p-8 gap-8"
     >
-      <div className="absolute left-0 top-1 flex items-center justify-center w-12 h-12 bg-background border-2 border-primary rounded-full">
-        <Icon className="w-6 h-6 text-primary" />
-      </div>
-      <div className="prose prose-lg dark:prose-invert max-w-none prose-p:text-muted-foreground prose-strong:text-foreground">
-        <h2 className="text-3xl font-bold tracking-tight !mb-4">{title}</h2>
-        {children}
-      </div>
-    </motion.div>
-  );
-};
-
-const OriginalEmojiDisplay = () => {
-  const originalEmojis = [
-    { src: "e-439.png", name: "Heart" },
-    { src: "e-44B.png", name: "Sun" },
-    { src: "e-44D.png", name: "Cloud" },
-    { src: "e-453.png", name: "Phone" },
-    { src: "e-45A.png", name: "Car" },
-    { src: "e-465.png", name: "Full Moon" },
-    { src: "e-474.png", name: "Aries" },
-    { src: "e-4A2.png", name: "Number 1" },
-    { src: "e-4B8.png", name: "PHS (Pager)" },
-    { src: "e-48D.png", name: "Game" },
-    { src: "e-490.png", name: "Music Note" },
-    { src: "e-49B.png", name: "Yen" },
-  ];
-  const baseUrl = "https://em-content.zobj.net/thumbs/120/docomo/20/";
-
-  return (
-    <div className="not-prose grid grid-cols-6 gap-4 p-4 bg-muted/50 rounded-lg border w-full max-w-sm mt-6">
-      {originalEmojis.map((emoji, i) => (
-        <Tooltip key={i} delayDuration={0}>
-          <TooltipTrigger asChild>
-            <motion.div
-              whileHover={{ scale: 1.2, rotate: 5 }}
-              className="flex items-center justify-center aspect-square cursor-pointer"
-            >
-              <Image
-                src={`${baseUrl}${emoji.src}`}
-                alt={emoji.name}
-                width={40}
-                height={40}
-                className="pixelated"
-                unoptimized
-              />
-            </motion.div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{emoji.name}</p>
-          </TooltipContent>
-        </Tooltip>
-      ))}
-    </div>
+      {children}
+    </motion.section>
   );
 };
 
 export default function HistoryPage() {
+  const { isEnabled, toggleNarration, speak } = useNarration();
   const [skinTone, setSkinTone] = useState(2);
   const skinToneModifiers = ["", "🏻", "🏼", "🏽", "🏾", "🏿"];
+
+  useEffect(() => {
+    if (isEnabled) {
+      speak(
+        "Welcome to EmojiVerse. Let's travel back in time and discover the story of the emoji."
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEnabled]);
 
   return (
     <TooltipProvider>
@@ -119,197 +131,192 @@ export default function HistoryPage() {
             </Link>
           </Button>
           <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={toggleNarration}>
+                  {isEnabled ? (
+                    <Volume2 className="h-4 w-4" />
+                  ) : (
+                    <VolumeX className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">Toggle Voice Narration</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Toggle voice narration</p>
+              </TooltipContent>
+            </Tooltip>
             <ThemeToggle />
           </div>
         </header>
 
-        <main className="container mx-auto max-w-3xl px-4">
-          <div className="pt-24 pb-12 text-center">
-            <BookOpen className="w-16 h-16 text-primary mx-auto mb-4" />
-            <h1 className="text-5xl font-bold tracking-tighter">
-              The Story of Emoji
-            </h1>
-            <p className="text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
-              From ancient symbols to the world's first global language.
+        <main>
+          <HistorySection
+            narrationText="Before emojis, humans were already trying to capture feelings and ideas through pictures. From cave paintings to Egyptian hieroglyphs, we've always used visuals to express more than words alone."
+            speak={speak}
+          >
+            <Pyramid className="w-16 h-16 text-primary" />
+            <h1 className="text-5xl font-bold tracking-tighter">The Ancient Roots of Emojis</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              Long before keyboards, we used pictures to capture feelings. From cave paintings 🐾 to Egyptian hieroglyphs 🔺, visual language is in our DNA.
             </p>
-          </div>
+            <div className="flex gap-6 text-4xl mt-4">
+              <Tooltip>
+                <TooltipTrigger><motion.span whileHover={{ scale: 1.2, y: -5 }} className="cursor-pointer">🖼️</motion.span></TooltipTrigger>
+                <TooltipContent><p>Cave Paintings</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger><motion.span whileHover={{ scale: 1.2, y: -5 }} className="cursor-pointer">📜</motion.span></TooltipTrigger>
+                <TooltipContent><p>Hieroglyphs</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger><motion.span whileHover={{ scale: 1.2, y: -5 }} className="cursor-pointer">✍️</motion.span></TooltipTrigger>
+                <TooltipContent><p>Medieval Doodles</p></TooltipContent>
+              </Tooltip>
+            </div>
+          </HistorySection>
 
-          <div className="relative border-l-2 border-border ml-6">
-            <TimelineItem icon={Pyramid} title="Ancient Roots">
-              <p>
-                Before keyboards, there were pictures. From cave paintings 🐾 to
-                Egyptian hieroglyphs 📜, using symbols to communicate is a
-                timeless human impulse.
+          <HistorySection
+            narrationText="In 1982, computer scientist Scott Fahlman proposed using the first emoticons to humanize digital conversation in plain text."
+            speak={speak}
+          >
+            <MessageCircle className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">The Birth of the Emoticon</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              In 1982, <span className="text-primary font-semibold">Scott Fahlman</span> proposed using <code className="bg-muted p-1 rounded-md">{`:-)`}</code> and <code className="bg-muted p-1 rounded-md">{`:-(`}</code> to add emotion to online text, humanizing the first digital conversations.
+            </p>
+            <Card className="w-full max-w-md p-6 bg-muted/50">
+              <p className="font-mono text-2xl md:text-4xl whitespace-pre-wrap text-center">
+                {`:-)`}   {`;-P`}   {`XD`}   {`>:( `}   {`^_^`}
               </p>
-            </TimelineItem>
+            </Card>
+          </HistorySection>
 
-            <TimelineItem icon={MessageCircle} title="Digital Precursors">
-              <p>
-                In 1982, <strong>Scott Fahlman</strong> proposed{" "}
-                <code className="bg-muted p-1 rounded-md">{`:-)`}</code> to add
-                emotion to text. In Japan, a different style,{" "}
-                <strong>Kaomoji</strong>, like{" "}
-                <code className="bg-muted p-1 rounded-md">{`(^_^) `}</code>,
-                emerged that could be read without tilting your head.
-              </p>
-              <Card className="mt-8 not-prose">
-                <CardContent className="p-4">
-                  <p className="font-mono text-xl md:text-2xl whitespace-pre-wrap text-center">
-                    {`Western: :-)   ;-P   XD   >:( \nJapanese: (^_^) (T_T) (o.O)`}
-                  </p>
-                </CardContent>
-              </Card>
-            </TimelineItem>
+          <HistorySection
+            narrationText="In 1999, Japan, designer Shigetaka Kurita created the first set of 176 true emojis for pagers, inspired by weather icons and manga symbols."
+            speak={speak}
+          >
+            <Globe className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">The Rise of the Emoji</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              In 1999, <span className="text-primary font-semibold">Shigetaka Kurita</span> in Japan 🇯🇵 created the first 176 emojis for pagers, inspired by weather icons, manga, and Kanji characters.
+            </p>
+            <div className="grid grid-cols-8 gap-4 p-4 bg-muted/50 rounded-lg border">
+              {'❤✨✌☕✈☀☁☂☎✉🎵⛽✂✅❓❗'.split("").map((emoji, i) => (
+                <Tooltip key={i}>
+                  <TooltipTrigger>
+                    <motion.div whileHover={{ scale: 1.5 }} className="text-2xl cursor-pointer">{emoji}</motion.div>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Original NTT DoCoMo set</p></TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </HistorySection>
 
-            <TimelineItem icon={Globe} title="The Birth of Emoji (1999)">
-              <p>
-                In 1999, <strong>Shigetaka Kurita</strong> created the first 176
-                emojis for pagers in Japan 🇯🇵. Each was a tiny 12x12 pixel
-                image, inspired by manga and weather symbols.
-              </p>
-              <div className="mt-8 not-prose">
-                <OriginalEmojiDisplay />
+          <HistorySection
+            narrationText="The 2010s were the turning point. Unicode standardized emojis, Apple put them on every iPhone, and they became a global phenomenon. In 2015, the 'Face with Tears of Joy' emoji was even Oxford Dictionary's Word of the Year."
+            speak={speak}
+          >
+            <Sparkles className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">Global Explosion</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              The <span className="text-primary font-semibold">Unicode Consortium</span> standardized emojis in 2010, and Apple's iOS keyboard in 2011 made them a worldwide phenomenon.
+            </p>
+            <Card className="w-full max-w-sm text-center">
+              <CardHeader>
+                <CardTitle>Word of the Year 2015</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-7xl">😂</p>
+                <p className="text-muted-foreground mt-2">Oxford Dictionary</p>
+              </CardContent>
+            </Card>
+          </HistorySection>
+
+          <HistorySection
+            narrationText="Emojis evolved beyond fun to become tools for representation and identity, with different skin tones, gender variations, and cultural symbols making our digital language more inclusive."
+            speak={speak}
+          >
+            <Users className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">The Age of Identity</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              Emojis evolved to reflect our diverse world, adding skin tones, gender variations, and cultural symbols to create a more inclusive visual language.
+            </p>
+            <div className="w-full max-w-md space-y-6">
+              <div className="text-6xl p-4 bg-muted/50 rounded-lg">
+                👋{skinToneModifiers[skinTone]}
               </div>
-            </TimelineItem>
-
-            <TimelineItem icon={Palette} title="The Great Redesign (2016)">
-              <p>
-                An emoji can be mightier than the sword. In 2016, Apple
-                famously changed its realistic pistol emoji to a harmless water
-                gun, sparking a global conversation about the impact of our
-                digital symbols.
-              </p>
-              <div className="flex items-center justify-center gap-8 p-6 bg-muted/50 rounded-lg w-full max-w-md mt-8 not-prose">
-                <div className="text-center">
-                  <Image
-                    src="https://em-content.zobj.net/thumbs/120/apple/96/pistol_1f52b.png"
-                    alt="Old pistol emoji"
-                    width={50}
-                    height={50}
-                    unoptimized
-                  />
-                  <p className="text-sm font-semibold mt-2">Before 2016</p>
-                </div>
-                <ArrowRight className="w-8 h-8 text-muted-foreground flex-shrink-0" />
-                <div className="text-center">
-                  <p className="text-5xl">🔫</p>
-                  <p className="text-sm font-semibold mt-2">After 2016</p>
-                </div>
+              <Slider defaultValue={[2]} min={0} max={5} step={1} onValueChange={(value) => setSkinTone(value[0])} />
+              <div className="flex justify-center gap-6 text-4xl mt-4">
+                <Tooltip><TooltipTrigger><span>👩‍⚕️</span></TooltipTrigger><TooltipContent><p>Woman Health Worker</p></TooltipContent></Tooltip>
+                <Tooltip><TooltipTrigger><span>👨‍🚀</span></TooltipTrigger><TooltipContent><p>Man Astronaut</p></TooltipContent></Tooltip>
+                <Tooltip><TooltipTrigger><span>🏳️‍🌈</span></TooltipTrigger><TooltipContent><p>Pride Flag</p></TooltipContent></Tooltip>
+                <Tooltip><TooltipTrigger><span>🪔</span></TooltipTrigger><TooltipContent><p>Diya Lamp</p></TooltipContent></Tooltip>
               </div>
-            </TimelineItem>
+            </div>
+          </HistorySection>
 
-            <TimelineItem icon={Gavel} title="Emoji in the Courtroom">
-              <p>
-                Emojis are serious business. They are now cited as evidence in
-                court cases, forcing judges to interpret their meaning. A single
-                emoji can change everything.
-              </p>
-              <Card className="w-full max-w-md p-6 bg-muted/50 mt-8 not-prose">
-                <p className="text-lg">
-                  "The tenant agrees to move out by May 1st 👍"
-                </p>
-                <p className="text-muted-foreground mt-4">
-                  Does 👍 constitute a binding agreement? Courts are deciding.
-                </p>
-              </Card>
-            </TimelineItem>
+          <HistorySection
+            narrationText="Today, with over 3,800 emojis used by 90% of the world's internet users, emojis have become a universal language, crossing cultural and age boundaries."
+            speak={speak}
+          >
+            <Bot className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">A Universal Language</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              With over 3,800 emojis used by 90% of internet users, they have become a true global language, crossing cultural, age, and literacy boundaries.
+            </p>
+            <div className="flex gap-6 text-6xl mt-4">
+              <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}>
+                💬
+              </motion.span>
+              <motion.span animate={{ y: [0, -10, 0] }} transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}>
+                ❤️
+              </motion.span>
+              <motion.span animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 2.5, repeat: Infinity, repeatType: "mirror" }}>
+                👍
+              </motion.span>
+            </div>
+          </HistorySection>
 
-            <TimelineItem icon={Scale} title="A Language of Nuance">
-              <p>
-                What you send isn't always what's received. The meaning of an
-                emoji can change across cultures, leading to misunderstandings.
-              </p>
-              <div className="flex items-center justify-around gap-8 p-6 bg-muted/50 rounded-lg mt-8 not-prose">
-                <div className="text-center">
-                  <p className="text-6xl">🙏</p>
-                  <p className="text-sm font-semibold mt-2">Prayer in West</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-6xl">🙏</p>
-                  <p className="text-sm font-semibold mt-2">
-                    Thank You in Japan
-                  </p>
-                </div>
-              </div>
-            </TimelineItem>
+          <HistorySection
+            narrationText="What's next? Think AI-generated emojis tailored to your mood, animated emojis in AR and VR, and a future of expression that is truly personalized."
+            speak={speak}
+          >
+            <Sparkles className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">The Future is Expressive</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              The future is personal. Expect AI-generated emojis, animated reactions in AR/VR, and even more ways to express your unique self.
+            </p>
+            <div className="flex gap-6 text-6xl mt-4">
+              <motion.span animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }} transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}>
+                🤖
+              </motion.span>
+              <motion.span animate={{ y: [0, -10, 0], filter: ['brightness(1)', 'brightness(1.5)', 'brightness(1)'] }} transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}>
+                ✨
+              </motion.span>
+              <motion.span animate={{ x: [0, 10, -10, 0] }} transition={{ duration: 2.5, repeat: Infinity, repeatType: "mirror" }}>
+                🚀
+              </motion.span>
+            </div>
+          </HistorySection>
 
-            <TimelineItem icon={Users} title="The Age of Identity">
-              <p>
-                Emojis have evolved to reflect our diverse world. The addition
-                of skin tones in 2015 was a landmark moment, followed by more
-                gender options and cultural symbols.
-              </p>
-              <div className="w-full max-w-md space-y-6 mt-8 not-prose">
-                <div className="text-6xl p-4 bg-muted/50 rounded-lg text-center">
-                  👋{skinToneModifiers[skinTone]}
-                </div>
-                <Slider
-                  defaultValue={[2]}
-                  min={0}
-                  max={5}
-                  step={1}
-                  onValueChange={(value) => setSkinTone(value[0])}
-                />
-              </div>
-            </TimelineItem>
-
-            <TimelineItem icon={Bot} title="The Future is Expressive">
-              <p>
-                The journey isn't over. Expect AI-generated emojis, animated
-                reactions in AR/VR, and even more ways to express your unique
-                self. The language will continue to grow with us.
-              </p>
-              <div className="flex gap-6 text-6xl mt-8 justify-center not-prose">
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                  }}
-                >
-                  🤖
-                </motion.span>
-                <motion.span
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                  }}
-                >
-                  ✨
-                </motion.span>
-                <motion.span
-                  animate={{ x: [0, 10, -10, 0] }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                  }}
-                >
-                  🚀
-                </motion.span>
-              </div>
-            </TimelineItem>
-          </div>
-
-          <div className="py-16 text-center">
-            <Hand className="w-16 h-16 text-primary mx-auto" />
-            <h2 className="text-4xl font-bold tracking-tighter mt-4">
-              More Than Just Icons
-            </h2>
-            <p className="text-xl text-foreground max-w-2xl mx-auto mt-4 font-semibold">
+          <HistorySection
+            narrationText="From tribal paintings to digital feelings, emojis are part of an ongoing evolution in human expression. They aren't just cute icons; they're a modern reflection of our oldest need: to be seen, to be felt, and to connect."
+            speak={speak}
+          >
+            <Hand className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">More Than Just Icons</h2>
+            <p className="text-2xl text-foreground max-w-2xl font-semibold">
               Emojis are a modern reflection of our oldest need:
               <br />
-              <span className="text-primary">
-                To be seen. To be felt. To connect.
-              </span>
+              <span className="text-primary">To be seen. To be felt. To connect.</span>
             </p>
-            <Button size="lg" className="mt-8" asChild>
-              <Link href="/">Play Emoji Sprint</Link>
+            <Button size="lg" className="mt-4" asChild>
+              <Link href="/">
+                Play Emoji Sprint
+              </Link>
             </Button>
-          </div>
+          </HistorySection>
         </main>
       </div>
     </TooltipProvider>
