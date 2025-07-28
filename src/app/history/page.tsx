@@ -14,8 +14,6 @@ import {
   Sparkles,
   Bot,
   Users,
-  Gavel,
-  Languages,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -255,53 +253,6 @@ export default function HistoryPage() {
                 <Tooltip><TooltipTrigger><span>🏳️‍🌈</span></TooltipTrigger><TooltipContent><p>Pride Flag</p></TooltipContent></Tooltip>
                 <Tooltip><TooltipTrigger><span>🪔</span></TooltipTrigger><TooltipContent><p>Diya Lamp</p></TooltipContent></Tooltip>
               </div>
-            </div>
-          </HistorySection>
-
-          <HistorySection
-            narrationText="Ever wonder how a new emoji is born? It's not magic. It's the Unicode Consortium, a non-profit that reviews detailed proposals from anyone. The process can take years, and requires proof that the emoji will be widely used."
-            speak={speak}
-          >
-            <Gavel className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">The Emoji Gatekeepers</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              New emojis are approved by the <span className="text-primary font-semibold">Unicode Consortium</span>. Anyone can submit a proposal, but it must prove the emoji will be widely used and is distinct. The process can take years!
-            </p>
-            <Card className="w-full max-w-2xl p-6 bg-muted/50">
-              <p className="font-mono text-2xl md:text-3xl whitespace-pre-wrap text-center flex justify-around items-center">
-                <span>📝<br/><span className="text-sm">Proposal</span></span>
-                <span className="text-muted-foreground">→</span>
-                <span>🗳️<br/><span className="text-sm">Review</span></span>
-                <span className="text-muted-foreground">→</span>
-                <span>✅<br/><span className="text-sm">Approved</span></span>
-                <span className="text-muted-foreground">→</span>
-                <span>📱<br/><span className="text-sm">On Your Phone</span></span>
-              </p>
-            </Card>
-          </HistorySection>
-
-          <HistorySection
-            narrationText="An emoji can mean different things across cultures. The folded hands emoji, seen as prayer in the West, is a respectful greeting in Japan. The thumbs up can be seen as an offensive gesture in parts of the Middle East."
-            speak={speak}
-          >
-            <Languages className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">Lost in Translation</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              A friendly gesture or an insult? Emojis can have very different meanings depending on where you are in the world.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-              <Card className="p-4 text-center bg-muted/50">
-                <p className="text-6xl">🙏</p>
-                <p className="mt-2 font-semibold">Prayer/Thanks (West) vs. Respectful Greeting (Japan)</p>
-              </Card>
-              <Card className="p-4 text-center bg-muted/50">
-                <p className="text-6xl">😇</p>
-                <p className="mt-2 font-semibold">Angelic (West) vs. Symbol of Death (China)</p>
-              </Card>
-              <Card className="p-4 text-center bg-muted/50">
-                <p className="text-6xl">👍</p>
-                <p className="mt-2 font-semibold">Approval (West) vs. Offensive Gesture (Middle East)</p>
-              </Card>
             </div>
           </HistorySection>
 
