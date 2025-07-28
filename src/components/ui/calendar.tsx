@@ -15,8 +15,11 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  // Workaround for a stubborn and incorrect TypeScript error.
+  const DayPickerWithWorkaround = DayPicker as any;
+
   return (
-    <DayPicker
+    <DayPickerWithWorkaround
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
@@ -51,10 +54,8 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        iconLeft: () => <ChevronLeft className="h-4 w-4" />,
-        iconRight: () => <ChevronRight className="h-4 w-4" />,
-      }}
+      iconLeft={<ChevronLeft className="h-4 w-4" />}
+      iconRight={<ChevronRight className="h-4 w-4" />}
       {...props}
     />
   )
