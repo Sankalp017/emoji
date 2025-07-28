@@ -58,17 +58,21 @@ export function EmojiWorldGame() {
   const [flash, setFlash] = useState<'correct' | 'wrong' | null>(null);
   const [usedEmojis, setUsedEmojis] = useState<string[]>([]);
   const [isTimeUp, setIsTimeUp] = useState(false);
+  const [backgroundEmojis, setBackgroundEmojis] = useState<any[]>([]);
 
   const { playCorrect, playWrong, playStart, playGameOver } = useSound();
 
-  const backgroundEmojis = React.useMemo(() => {
-    const shuffled = shuffle(EMOJIS);
-    return Array.from({ length: 40 }).map((_, i) => ({
-        char: shuffled[i % shuffled.length].char,
-        left: `${Math.random() * 100}%`,
-        duration: Math.random() * 20 + 15, // 15 to 35 seconds
-        size: Math.random() * 2.5 + 1.5, // 1.5rem to 4rem
-    }));
+  useEffect(() => {
+    const generateEmojis = () => {
+      const shuffled = shuffle(EMOJIS);
+      return Array.from({ length: 40 }).map((_, i) => ({
+          char: shuffled[i % shuffled.length].char,
+          left: `${Math.random() * 100}%`,
+          duration: Math.random() * 20 + 15, // 15 to 35 seconds
+          size: Math.random() * 2.5 + 1.5, // 1.5rem to 4rem
+      }));
+    };
+    setBackgroundEmojis(generateEmojis());
   }, []);
 
   useEffect(() => {
