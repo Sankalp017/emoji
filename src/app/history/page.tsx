@@ -217,8 +217,8 @@ export default function HistoryPage() {
               invented the first emoji set in 1999 for Japanese pagers 📟,
               including icons for weather ☀️, emotions ❤️, and daily life 📱.
             </p>
-            <div className="grid grid-cols-8 gap-2 p-4 bg-muted/50 rounded-lg border">
-              {"❤️📞👍👎☀️☁️❓❗😂😍🎵…".split("").map((emoji, i) => (
+            <div className="grid grid-cols-8 gap-4 p-4 bg-muted/50 rounded-lg border">
+              {'❤✨✌☕✈☀☁☂☎✉🎵⛽✂✅❓❗'.split("").map((emoji, i) => (
                 <Tooltip key={i}>
                   <TooltipTrigger>
                     <motion.div whileHover={{ scale: 1.5 }} className="text-2xl cursor-pointer">{emoji}</motion.div>
