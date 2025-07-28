@@ -43,6 +43,7 @@ export function OriginalEmojiDisplay() {
                   width={40}
                   height={40}
                   className="pixelated"
+                  unoptimized
                 />
               </motion.div>
             </TooltipTrigger>

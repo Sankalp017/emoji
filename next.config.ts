@@ -9,12 +9,6 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/thumbs/**",
       },
-      {
-        protocol: "https",
-        hostname: "emojipedia-us.s3.dualstack.us-west-1.amazonaws.com",
-        port: "",
-        pathname: "/thumbs/**",
-      },
     ],
   },
   webpack: (config) => {
