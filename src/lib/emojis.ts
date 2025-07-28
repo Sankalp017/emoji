@@ -91,6 +91,7 @@ export const EMOJIS: Emoji[] = [
   { char: "👎", name: "Thumbs Down", description: "A thumbs-down gesture for disapproval or disagreement.", usage: ["I don't like that 👎", "That's a bad idea.", "No, thank you."] },
   { char: "✊", name: "Raised Fist", description: "A raised fist, representing solidarity, support, or resistance.", usage: ["Power to the people ✊", "We stand together.", "Stay strong!"] },
   { char: "👊", name: "Oncoming Fist", description: "A fist coming towards the viewer, for a fist bump.", usage: ["Fist bump! 👊", "Great work, team.", "You got this."] },
+  { char: "🖕", name: "Middle Finger", description: "A hand with the middle finger extended. A common and vulgar gesture of contempt.", usage: ["Expressing frustration with the traffic. 🖕", "My reaction when the code breaks again.", "A gesture of defiance."] },
   { char: "👏", name: "Clapping Hands", description: "Clapping hands to show applause or appreciation.", usage: ["Well done! 👏", "Congratulations!", "Bravo!"] },
   { char: "🙌", name: "Raising Hands", description: "Two hands raised in celebration or praise.", usage: ["Hallelujah! 🙌", "We did it!", "Praise the sun!"] },
   { char: "🙏", name: "Folded Hands", description: "Two hands pressed together. Can mean 'please', 'thank you', or represent prayer. Also used for a high-five.", usage: ["Thank you so much 🙏", "Please, can you help me?", "Praying for you."] },
