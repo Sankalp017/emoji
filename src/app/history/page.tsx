@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -11,22 +10,17 @@ import {
   Pyramid,
   MessageCircle,
   Globe,
-  Sparkles,
   Bot,
   Users,
   Gavel,
   Scale,
-  Factory,
   Palette,
   BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -137,13 +131,7 @@ export default function HistoryPage() {
               </p>
               <div className="flex items-center justify-center gap-8 p-6 bg-muted/50 rounded-lg w-full max-w-md mt-8 not-prose">
                 <div className="text-center">
-                  <Image
-                    src="https://em-content.zobj.net/thumbs/120/apple/96/pistol_1f52b.png"
-                    alt="Old pistol emoji"
-                    width={50}
-                    height={50}
-                    unoptimized
-                  />
+                  <p className="text-lg font-semibold">A realistic revolver</p>
                   <p className="text-sm font-semibold mt-2">Before 2016</p>
                 </div>
                 <ArrowRight className="w-8 h-8 text-muted-foreground flex-shrink-0" />
@@ -206,6 +194,11 @@ export default function HistoryPage() {
                   step={1}
                   onValueChange={(value) => setSkinTone(value[0])}
                 />
+                <div className="flex justify-center gap-6 items-center mt-4 text-4xl">
+                  <span>🧑‍⚕️</span>
+                  <span>👨‍👩‍👧‍👦</span>
+                  <span>🏳️‍⚧️</span>
+                </div>
               </div>
             </TimelineItem>
 

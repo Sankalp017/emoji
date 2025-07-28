@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Tooltip,
@@ -10,21 +9,19 @@ import {
 } from "@/components/ui/tooltip";
 
 const originalEmojis = [
-  { src: "e-439.png", name: "Heart" },
-  { src: "e-44B.png", name: "Sun" },
-  { src: "e-44D.png", name: "Cloud" },
-  { src: "e-453.png", name: "Phone" },
-  { src: "e-45A.png", name: "Car" },
-  { src: "e-465.png", name: "Full Moon" },
-  { src: "e-474.png", name: "Aries" },
-  { src: "e-4A2.png", name: "Number 1" },
-  { src: "e-4B8.png", name: "PHS (Pager)" },
-  { src: "e-48D.png", name: "Game" },
-  { src: "e-490.png", name: "Music Note" },
-  { src: "e-49B.png", name: "Yen" },
+  { char: "❤️", name: "Heart" },
+  { char: "☀️", name: "Sun" },
+  { char: "☁️", name: "Cloud" },
+  { char: "📱", name: "Phone" },
+  { char: "🚗", name: "Car" },
+  { char: "🌕", name: "Full Moon" },
+  { char: "♈️", name: "Aries" },
+  { char: "1️⃣", name: "Number 1" },
+  { char: "📟", name: "Pager" },
+  { char: "🎮", name: "Game" },
+  { char: "🎵", name: "Music Note" },
+  { char: "💴", name: "Yen" },
 ];
-
-const baseUrl = "https://em-content.zobj.net/thumbs/120/docomo/20/";
 
 export function OriginalEmojiDisplay() {
   return (
@@ -35,16 +32,9 @@ export function OriginalEmojiDisplay() {
             <TooltipTrigger>
               <motion.div
                 whileHover={{ scale: 1.2, rotate: 5 }}
-                className="flex items-center justify-center aspect-square cursor-pointer"
+                className="flex items-center justify-center aspect-square cursor-pointer text-4xl"
               >
-                <Image
-                  src={`${baseUrl}${emoji.src}`}
-                  alt={emoji.name}
-                  width={40}
-                  height={40}
-                  className="pixelated"
-                  unoptimized
-                />
+                {emoji.char}
               </motion.div>
             </TooltipTrigger>
             <TooltipContent>
