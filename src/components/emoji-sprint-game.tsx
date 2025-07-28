@@ -172,7 +172,7 @@ export function EmojiSprintGame() {
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md text-center bg-card/50 backdrop-blur-sm border border-border rounded-xl p-8"
+            className="w-full max-w-md text-center bg-card/80 backdrop-blur-sm border border-border rounded-xl p-8"
           >
             <h2 className="text-5xl font-bold tracking-tighter mb-2">Game Over!</h2>
             <p className="text-muted-foreground mb-8">Here's how you did:</p>
@@ -228,7 +228,7 @@ export function EmojiSprintGame() {
                   <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
                     <motion.circle
                       cx="50" cy="50" r="45"
-                      className="stroke-primary/50"
+                      className="stroke-primary"
                       strokeWidth="4" fill="transparent"
                       strokeDasharray={2 * Math.PI * 45}
                       transform="rotate(-90 50 50)"
@@ -244,8 +244,8 @@ export function EmojiSprintGame() {
                       <Button
                         onClick={() => handleAnswer(option)}
                         className={`w-full h-24 text-lg font-semibold whitespace-normal transition-all duration-300 relative focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-                          bg-card/50 backdrop-blur-sm border border-border
-                          hover:bg-accent/50 hover:border-accent
+                          bg-card border border-border
+                          hover:bg-accent hover:border-primary hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)]
                           ${ selectedAnswer && option === selectedAnswer
                             ? isCorrect ? '!bg-green-500/80 !border-green-400' : '!bg-red-500/80 !border-red-400 animate-shake'
                             : selectedAnswer && option === currentEmoji.name ? '!bg-green-500/80 !border-green-400' : ''
@@ -300,7 +300,7 @@ export function EmojiSprintGame() {
         <ThemeToggle />
       </div>
       {gameState === 'playing' && (
-        <div className="absolute top-4 left-4 flex gap-4 text-xl font-semibold bg-card/50 backdrop-blur-sm border border-border rounded-lg px-4 py-2">
+        <div className="absolute top-4 left-4 flex gap-4 text-xl font-semibold bg-card border border-border rounded-lg px-4 py-2 shadow-md">
           <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
             <Award className="h-6 w-6 text-yellow-400" />
             <AnimatedStat value={score} />
