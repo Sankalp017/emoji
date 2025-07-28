@@ -11,7 +11,6 @@ import {
   Pyramid,
   MessageCircle,
   Globe,
-  Palette,
   Sparkles,
   Bot,
   Users,
@@ -25,7 +24,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 // A custom hook to handle speech synthesis
@@ -133,89 +131,75 @@ export default function HistoryPage() {
             </Link>
           </Button>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={toggleNarration}>
-              {isEnabled ? (
-                <Volume2 className="h-4 w-4" />
-              ) : (
-                <VolumeX className="h-4 w-4" />
-              )}
-              <span className="sr-only">Toggle Voice Narration</span>
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={toggleNarration}>
+                  {isEnabled ? (
+                    <Volume2 className="h-4 w-4" />
+                  ) : (
+                    <VolumeX className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">Toggle Voice Narration</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Toggle voice narration</p>
+              </TooltipContent>
+            </Tooltip>
             <ThemeToggle />
           </div>
         </header>
 
         <main>
           <HistorySection
-            narrationText="Long before keyboards, we expressed ourselves through pictures. From cave art to Egyptian hieroglyphs, early humans used visuals to say what words couldn’t."
-            speak={speak}
-          >
-            <Hand className="w-16 h-16 text-primary" />
-            <h1 className="text-5xl font-bold tracking-tighter">
-              The Original Emojis: Our Ancient Symbols
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              Long before keyboards, we expressed ourselves through pictures.
-              From cave art 🐾 to Egyptian hieroglyphs 🔺, early humans used
-              visuals to say what words couldn’t.
-            </p>
-            <div className="flex gap-6 text-4xl mt-4">
-              <Tooltip>
-                <TooltipTrigger>
-                  <motion.span whileHover={{ scale: 1.2, rotate: -10 }} className="cursor-pointer">🖐️</motion.span>
-                </TooltipTrigger>
-                <TooltipContent><p>Hand Stencil, 30,000 BC</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger>
-                  <motion.span whileHover={{ scale: 1.2, rotate: 10 }} className="cursor-pointer">👁️</motion.span>
-                </TooltipTrigger>
-                <TooltipContent><p>Eye of Horus (Protection)</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger>
-                  <motion.span whileHover={{ scale: 1.2, rotate: -5 }} className="cursor-pointer">☀️</motion.span>
-                </TooltipTrigger>
-                <TooltipContent><p>Ra (Sun God)</p></TooltipContent>
-              </Tooltip>
-            </div>
-          </HistorySection>
-
-          <HistorySection
-            narrationText="In 1982, computer scientist Scott Fahlman proposed the first emoticons to bring emotion into digital conversations."
-            speak={speak}
-          >
-            <MessageCircle className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">
-              The Rise of the Emoticon
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              In 1982, computer scientist{" "}
-              <span className="text-primary font-semibold">Scott Fahlman</span>{" "}
-              used <code className="bg-muted p-1 rounded-md">{`:-)`}</code> and{" "}
-              <code className="bg-muted p-1 rounded-md">{`:-(`}</code> to add
-              emotion to online messages. The emoticon was born!
-            </p>
-            <div className="flex gap-4 text-4xl">
-              <motion.span animate={{ rotate: [0, 5, -5, 0] }} transition={{ repeat: Infinity, duration: 2 }}>😊</motion.span>
-              <motion.span animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>😉</motion.span>
-              <motion.span animate={{ scale: [1, 0.9, 1] }} transition={{ repeat: Infinity, duration: 2.5 }}>😢</motion.span>
-            </div>
-          </HistorySection>
-
-          <HistorySection
-            narrationText="In 1999, designer Shigetaka Kurita invented the first real emoji set for Japanese pagers."
+            narrationText="Before emojis, humans were already trying to capture feelings and ideas through pictures. From cave paintings to Egyptian hieroglyphs, we've always used visuals to express more than words alone."
             speak={speak}
           >
             <Pyramid className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">
-              Where the Real Emojis Began
-            </h2>
+            <h1 className="text-5xl font-bold tracking-tighter">The Ancient Roots of Emojis</h1>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Designer{" "}
-              <span className="text-primary font-semibold">Shigetaka Kurita</span>{" "}
-              invented the first emoji set in 1999 for Japanese pagers 📟,
-              including icons for weather ☀️, emotions ❤️, and daily life 📱.
+              Long before keyboards, we used pictures to capture feelings. From cave paintings 🐾 to Egyptian hieroglyphs 🔺, visual language is in our DNA.
+            </p>
+            <div className="flex gap-6 text-4xl mt-4">
+              <Tooltip>
+                <TooltipTrigger><motion.span whileHover={{ scale: 1.2, y: -5 }} className="cursor-pointer">🖼️</motion.span></TooltipTrigger>
+                <TooltipContent><p>Cave Paintings</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger><motion.span whileHover={{ scale: 1.2, y: -5 }} className="cursor-pointer">📜</motion.span></TooltipTrigger>
+                <TooltipContent><p>Hieroglyphs</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger><motion.span whileHover={{ scale: 1.2, y: -5 }} className="cursor-pointer">✍️</motion.span></TooltipTrigger>
+                <TooltipContent><p>Medieval Doodles</p></TooltipContent>
+              </Tooltip>
+            </div>
+          </HistorySection>
+
+          <HistorySection
+            narrationText="In 1982, computer scientist Scott Fahlman proposed using the first emoticons to humanize digital conversation in plain text."
+            speak={speak}
+          >
+            <MessageCircle className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">The Birth of the Emoticon</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              In 1982, <span className="text-primary font-semibold">Scott Fahlman</span> proposed using <code className="bg-muted p-1 rounded-md">{`:-)`}</code> and <code className="bg-muted p-1 rounded-md">{`:-(`}</code> to add emotion to online text, humanizing the first digital conversations.
+            </p>
+            <Card className="w-full max-w-md p-6 bg-muted/50">
+              <p className="font-mono text-2xl md:text-4xl whitespace-pre-wrap text-center">
+                {`:-)`}   {`;-P`}   {`XD`}   {`>:( `}   {`^_^`}
+              </p>
+            </Card>
+          </HistorySection>
+
+          <HistorySection
+            narrationText="In 1999, Japan, designer Shigetaka Kurita created the first set of 176 true emojis for pagers, inspired by weather icons and manga symbols."
+            speak={speak}
+          >
+            <Globe className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">The Rise of the Emoji</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              In 1999, <span className="text-primary font-semibold">Shigetaka Kurita</span> in Japan 🇯🇵 created the first 176 emojis for pagers, inspired by weather icons, manga, and Kanji characters.
             </p>
             <div className="grid grid-cols-8 gap-4 p-4 bg-muted/50 rounded-lg border">
               {'❤✨✌☕✈☀☁☂☎✉🎵⛽✂✅❓❗'.split("").map((emoji, i) => (
@@ -230,49 +214,33 @@ export default function HistoryPage() {
           </HistorySection>
 
           <HistorySection
-            narrationText="In 2010, Unicode standardized emojis. By 2011, Apple brought them to the iPhone, and they went global."
+            narrationText="The 2010s were the turning point. Unicode standardized emojis, Apple put them on every iPhone, and they became a global phenomenon. In 2015, the 'Face with Tears of Joy' emoji was even Oxford Dictionary's Word of the Year."
             speak={speak}
           >
-            <Globe className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">
-              Unicode Takes Over the World
-            </h2>
+            <Sparkles className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">Global Explosion</h2>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Emojis became a global language after{" "}
-              <span className="text-primary font-semibold">
-                Unicode standardized them in 2010
-              </span>
-              . Apple introduced them on iPhones in 2011—and the world never
-              looked back.
+              The <span className="text-primary font-semibold">Unicode Consortium</span> standardized emojis in 2010, and Apple's iOS keyboard in 2011 made them a worldwide phenomenon.
             </p>
-            <Card className="w-full max-w-sm">
+            <Card className="w-full max-w-sm text-center">
               <CardHeader>
-                <CardTitle>Fun Fact!</CardTitle>
+                <CardTitle>Word of the Year 2015</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-lg">
-                  The 'Face with Tears of Joy' emoji 😂 was Oxford Dictionary's
-                  Word of the Year in 2015!
-                </p>
+                <p className="text-7xl">😂</p>
+                <p className="text-muted-foreground mt-2">Oxford Dictionary</p>
               </CardContent>
             </Card>
           </HistorySection>
 
           <HistorySection
-            narrationText="Emojis began to represent real people and real lives, with skin tones, diverse genders, and cultural icons."
+            narrationText="Emojis evolved beyond fun to become tools for representation and identity, with different skin tones, gender variations, and cultural symbols making our digital language more inclusive."
             speak={speak}
           >
             <Users className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">
-              Representation & Identity
-            </h2>
+            <h2 className="text-5xl font-bold tracking-tighter">The Age of Identity</h2>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Emojis began to represent{" "}
-              <span className="text-primary font-semibold">
-                real people and real lives
-              </span>
-              . With skin tones, genders, and cultural diversity, emoji became
-              more than fun—they became personal.
+              Emojis evolved to reflect our diverse world, adding skin tones, gender variations, and cultural symbols to create a more inclusive visual language.
             </p>
             <div className="w-full max-w-md space-y-6">
               <div className="text-6xl p-4 bg-muted/50 rounded-lg">
@@ -281,29 +249,43 @@ export default function HistoryPage() {
               <Slider defaultValue={[2]} min={0} max={5} step={1} onValueChange={(value) => setSkinTone(value[0])} />
               <div className="flex justify-center gap-6 text-4xl mt-4">
                 <Tooltip><TooltipTrigger><span>👩‍⚕️</span></TooltipTrigger><TooltipContent><p>Woman Health Worker</p></TooltipContent></Tooltip>
-                <Tooltip><TooltipTrigger><span>👨‍⚕️</span></TooltipTrigger><TooltipContent><p>Man Health Worker</p></TooltipContent></Tooltip>
-                <Tooltip><TooltipTrigger><span>🧑‍⚕️</span></TooltipTrigger><TooltipContent><p>Health Worker</p></TooltipContent></Tooltip>
+                <Tooltip><TooltipTrigger><span>👨‍🚀</span></TooltipTrigger><TooltipContent><p>Man Astronaut</p></TooltipContent></Tooltip>
+                <Tooltip><TooltipTrigger><span>🏳️‍🌈</span></TooltipTrigger><TooltipContent><p>Pride Flag</p></TooltipContent></Tooltip>
                 <Tooltip><TooltipTrigger><span>🪔</span></TooltipTrigger><TooltipContent><p>Diya Lamp</p></TooltipContent></Tooltip>
-                <Tooltip><TooltipTrigger><span>🧧</span></TooltipTrigger><TooltipContent><p>Red Envelope</p></TooltipContent></Tooltip>
               </div>
             </div>
           </HistorySection>
 
           <HistorySection
-            narrationText="The next generation of emojis is AI-powered, 3D, and fully personalized. The future is expressive and infinite."
+            narrationText="Today, with over 3,800 emojis used by 90% of the world's internet users, emojis have become a universal language, crossing cultural and age boundaries."
             speak={speak}
           >
             <Bot className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">
-              The Future: AI, Custom, and Beyond
-            </h2>
+            <h2 className="text-5xl font-bold tracking-tighter">A Universal Language</h2>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              The next generation of emojis is{" "}
-              <span className="text-primary font-semibold">
-                AI-powered, 3D, and fully personalized
-              </span>
-              . Imagine your face as an emoji—or emotions generated in real
-              time.
+              With over 3,800 emojis used by 90% of internet users, they have become a true global language, crossing cultural, age, and literacy boundaries.
+            </p>
+            <div className="flex gap-6 text-6xl mt-4">
+              <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}>
+                💬
+              </motion.span>
+              <motion.span animate={{ y: [0, -10, 0] }} transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}>
+                ❤️
+              </motion.span>
+              <motion.span animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 2.5, repeat: Infinity, repeatType: "mirror" }}>
+                👍
+              </motion.span>
+            </div>
+          </HistorySection>
+
+          <HistorySection
+            narrationText="What's next? Think AI-generated emojis tailored to your mood, animated emojis in AR and VR, and a future of expression that is truly personalized."
+            speak={speak}
+          >
+            <Sparkles className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">The Future is Expressive</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              The future is personal. Expect AI-generated emojis, animated reactions in AR/VR, and even more ways to express your unique self.
             </p>
             <div className="flex gap-6 text-6xl mt-4">
               <motion.span animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }} transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}>
@@ -319,27 +301,21 @@ export default function HistoryPage() {
           </HistorySection>
 
           <HistorySection
-            narrationText="Emojis connect us across borders, generations, and cultures. They aren’t just icons—they’re the way we feel, react, and belong in the digital world."
+            narrationText="From tribal paintings to digital feelings, emojis are part of an ongoing evolution in human expression. They aren't just cute icons; they're a modern reflection of our oldest need: to be seen, to be felt, and to connect."
             speak={speak}
           >
-            <Sparkles className="w-16 h-16 text-primary" />
-            <h2 className="text-5xl font-bold tracking-tighter">
-              The Universal Language
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              Emojis connect us across borders 🌍, generations 👶👴, and
-              cultures 🎎. They aren’t just icons—they’re the way we{" "}
-              <span className="text-primary font-semibold">
-                feel, react, and belong
-              </span>{" "}
-              in the digital world.
+            <Hand className="w-16 h-16 text-primary" />
+            <h2 className="text-5xl font-bold tracking-tighter">More Than Just Icons</h2>
+            <p className="text-2xl text-foreground max-w-2xl font-semibold">
+              Emojis are a modern reflection of our oldest need:
+              <br />
+              <span className="text-primary">To be seen. To be felt. To connect.</span>
             </p>
-            <div className="w-full max-w-sm space-y-4 mt-4">
-              <Input placeholder="Share your favorite emoji..." />
-              <Button size="lg" className="w-full">
-                Share 💬
-              </Button>
-            </div>
+            <Button size="lg" className="mt-4" asChild>
+              <Link href="/">
+                Play Emoji Sprint
+              </Link>
+            </Button>
           </HistorySection>
         </main>
       </div>
