@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ArrowLeft } from "lucide-react";
 
 // A custom hook to handle speech synthesis
 function useNarration() {
@@ -124,10 +125,10 @@ export default function HistoryPage() {
     <TooltipProvider>
       <div className="bg-background text-foreground">
         <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-background/80 backdrop-blur-sm">
-          <Button asChild variant="outline" size="icon">
+          <Button asChild variant="outline">
             <Link href="/">
-              <span className="text-lg">⬅️</span>
-              <span className="sr-only">Back to Game</span>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Game
             </Link>
           </Button>
           <div className="flex items-center gap-2">
@@ -146,7 +147,7 @@ export default function HistoryPage() {
           </div>
         </header>
 
-        <main className="flex flex-col items-center">
+        <main className="flex flex-col items-center pt-16">
           <HistorySection
             narrationText="Before emojis, humans were already trying to capture feelings and ideas through pictures. From cave paintings to Egyptian hieroglyphs, we've always used visuals to express more than words alone."
             speak={speak}

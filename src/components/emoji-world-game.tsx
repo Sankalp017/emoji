@@ -282,9 +282,9 @@ export function EmojiWorldGame() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-center flex flex-col items-center gap-4 z-10 p-4"
+            className="text-center flex flex-col items-center gap-4 z-10 p-4 pt-16 sm:pt-24"
           >
-            <h1 className="text-7xl md:text-8xl font-bold tracking-tighter bg-gradient-to-br from-primary via-primary/80 to-primary bg-clip-text text-transparent dark:from-primary dark:via-primary/60 dark:to-primary">
+            <h1 className="text-6xl md:text-7xl font-bold tracking-tighter bg-gradient-to-br from-primary via-primary/80 to-primary bg-clip-text text-transparent dark:from-primary dark:via-primary/60 dark:to-primary">
               Emoji World
             </h1>
             <p className="text-xl text-muted-foreground max-w-md">
