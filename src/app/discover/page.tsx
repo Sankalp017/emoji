@@ -6,13 +6,15 @@ import { EMOJIS, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerTrigger,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 
@@ -52,45 +54,56 @@ export default function DiscoverPage() {
           />
         </div>
 
-        <Dialog open={!!selectedEmoji} onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}>
+        <Drawer open={!!selectedEmoji} onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
             {filteredEmojis.map((emoji) => (
-              <DialogTrigger asChild key={emoji.char} onClick={() => setSelectedEmoji(emoji)}>
+              <DrawerTrigger asChild key={emoji.char} onClick={() => setSelectedEmoji(emoji)}>
                 <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
                   <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
                     <span className="text-4xl">{emoji.char}</span>
                     <p className="text-xs font-medium text-muted-foreground">{emoji.name}</p>
                   </CardContent>
                 </Card>
-              </DialogTrigger>
+              </DrawerTrigger>
             ))}
           </div>
 
           {selectedEmoji && (
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-4">
-                  <span className="text-5xl">{selectedEmoji.char}</span>
-                  <span className="text-3xl font-bold">{selectedEmoji.name}</span>
-                </DialogTitle>
-                <DialogDescription className="pt-2 text-base">
-                  {selectedEmoji.description}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="mt-4">
-                <h3 className="font-semibold mb-2 text-lg">Example Usage:</h3>
-                <ul className="space-y-2">
-                  {selectedEmoji.usage.map((use, index) => (
-                    <li key={index} className="flex items-start gap-2 text-sm">
-                      <MessageCircle className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
-                      <span>{use}</span>
-                    </li>
-                  ))}
-                </ul>
+            <DrawerContent>
+              <div className="mx-auto w-full max-w-md p-4">
+                <div className="text-center">
+                  <div className="text-8xl mb-4">{selectedEmoji.char}</div>
+                  <DrawerHeader className="p-0">
+                    <DrawerTitle className="text-3xl font-bold">{selectedEmoji.name}</DrawerTitle>
+                    <DrawerDescription className="text-lg text-muted-foreground mt-2 px-4">
+                      {selectedEmoji.description}
+                    </DrawerDescription>
+                  </DrawerHeader>
+                </div>
+                
+                <div className="mt-6">
+                  <h3 className="font-semibold mb-3 text-xl text-center">Example Usage</h3>
+                  <div className="space-y-3">
+                    {selectedEmoji.usage.map((use, index) => (
+                      <Card key={index} className="bg-muted/50">
+                        <CardContent className="p-3 flex items-start gap-3">
+                          <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
+                          <span className="text-base text-left">{use}</span>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+
+                <DrawerFooter className="pt-6 px-0">
+                  <DrawerClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DrawerClose>
+                </DrawerFooter>
               </div>
-            </DialogContent>
+            </DrawerContent>
           )}
-        </Dialog>
+        </Drawer>
       </div>
     </div>
   );
