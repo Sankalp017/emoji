@@ -11,11 +11,9 @@ import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Award, BarChart, Flame, Trophy, X } from 'lucide-react';
+import { Award, BarChart, Trophy, X } from 'lucide-react';
 
 const ROUND_DURATION = 5;
-const STREAK_BONUS_THRESHOLD = 5;
-const STREAK_BONUS_POINTS = 10;
 
 function AnimatedStat({ value }: { value: number }) {
   const spring = useSpring(value, { mass: 0.8, stiffness: 100, damping: 15 });
@@ -30,7 +28,6 @@ function AnimatedStat({ value }: { value: number }) {
 export function EmojiSprintGame() {
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameOver'>('start');
   const [score, setScore] = useState(0);
-  const [streak, setStreak] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [currentEmoji, setCurrentEmoji] = useState<Emoji | null>(null);
   const [options, setOptions] = useState<string[]>([]);
@@ -117,29 +114,21 @@ export function EmojiSprintGame() {
       setFlash('correct');
       setCorrectAnswers(c => c + 1);
       
-      const newStreak = streak + 1;
-      let points = 5 + streak;
-      
-      if (newStreak > 0 && newStreak % STREAK_BONUS_THRESHOLD === 0) {
-        points += STREAK_BONUS_POINTS;
-        toast.info(`+${STREAK_BONUS_POINTS} Streak Bonus!`, { duration: 1500 });
-      }
-      
+      const points = 10;
       setScore(s => s + points);
-      setStreak(newStreak);
+
       setTimeout(nextRound, 1000);
     } else {
       playWrong();
       setIsCorrect(false);
       setFlash('wrong');
-      setStreak(0);
       toast.error(answer ? "Oops!" : "Time's up!", { duration: 1000 });
       setTimeout(() => {
         setGameState('gameOver');
         playGameOver();
       }, 1200);
     }
-  }, [currentEmoji, nextRound, playCorrect, playGameOver, playWrong, selectedAnswer, streak]);
+  }, [currentEmoji, nextRound, playCorrect, playGameOver, playWrong, selectedAnswer]);
 
   useEffect(() => {
     if (gameState === 'playing') {
@@ -166,7 +155,6 @@ export function EmojiSprintGame() {
   const startGame = () => {
     playStart();
     setScore(0);
-    setStreak(0);
     setCorrectAnswers(0);
     setQuestionsAnswered(0);
     setFlash(null);
@@ -214,7 +202,10 @@ export function EmojiSprintGame() {
                     <span>Accuracy: {accuracy}%</span>
                   </div>
                 </div>
-                <Button onClick={startGame} size="lg" className="mt-4">Play Again</Button>
+                <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                  <Button onClick={startGame} size="lg">Play Again</Button>
+                  <Button onClick={quitGame} variant="secondary" size="lg">Main Menu</Button>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -308,16 +299,18 @@ export function EmojiSprintGame() {
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      <div className="absolute top-4 left-4 flex flex-col sm:flex-row gap-x-6 items-start sm:items-center text-2xl font-semibold">
-        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
-          <Award className="h-7 w-7 text-yellow-400" />
-          <AnimatedStat value={score} />
-        </motion.div>
-        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
-          <Flame className={`h-7 w-7 transition-colors ${streak > 0 ? 'text-red-500' : 'text-muted-foreground'}`} />
-          <AnimatedStat value={streak} />
-        </motion.div>
-      </div>
+      {gameState === 'playing' && (
+        <div className="absolute top-4 left-4">
+          <Card>
+            <CardContent className="p-3 flex items-center gap-3">
+              <Award className="h-8 w-8 text-yellow-400" />
+              <div className="text-3xl font-bold tabular-nums">
+                <AnimatedStat value={score} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
       <main className="flex-grow flex items-center justify-center w-full">
         {renderGameState()}
       </main>
