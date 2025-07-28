@@ -12,6 +12,7 @@ import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Award, BarChart, Crown } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 const ROUND_DURATION = 5;
 
@@ -38,6 +39,7 @@ export function EmojiSprintGame() {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [flash, setFlash] = useState<'correct' | 'wrong' | null>(null);
   const [usedEmojis, setUsedEmojis] = useState<string[]>([]);
+  const [isTimeUp, setIsTimeUp] = useState(false);
 
   const { playCorrect, playWrong, playStart, playGameOver } = useSound();
 
@@ -63,6 +65,7 @@ export function EmojiSprintGame() {
     setIsCorrect(null);
     setSelectedAnswer(null);
     setFlash(null);
+    setIsTimeUp(false);
 
     let availableEmojis = EMOJIS.filter(e => !usedEmojis.includes(e.char));
 
@@ -122,7 +125,11 @@ export function EmojiSprintGame() {
       playWrong();
       setIsCorrect(false);
       setFlash('wrong');
-      toast.error(answer ? "Oops!" : "Time's up!", { duration: 1000 });
+      if (answer === null) {
+        setIsTimeUp(true);
+      } else {
+        toast.error("Oops!", { duration: 1000 });
+      }
       setTimeout(() => {
         setGameState('gameOver');
         playGameOver();
@@ -160,6 +167,7 @@ export function EmojiSprintGame() {
     setFlash(null);
     setUsedEmojis([]);
     setCurrentEmoji(null);
+    setIsTimeUp(false);
     setGameState('playing');
   };
 
@@ -211,6 +219,17 @@ export function EmojiSprintGame() {
           </motion.div>
         );
       case 'playing':
+        if (isTimeUp) {
+          return (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center"
+            >
+              <h2 className="text-5xl font-bold text-destructive">Time's Up!</h2>
+            </motion.div>
+          );
+        }
         return (
           <AnimatePresence mode="wait">
             {currentEmoji && (
@@ -222,22 +241,18 @@ export function EmojiSprintGame() {
                 transition={{ duration: 0.3 }}
                 className="w-full flex flex-col items-center gap-8"
               >
-                <div className="relative flex items-center justify-center">
-                  <motion.div
-                    className="absolute w-full h-full border-4 border-primary rounded-full"
-                    initial={{ scale: 0, opacity: 0.5 }}
-                    animate={{ scale: 1, opacity: 0 }}
-                    transition={{ duration: ROUND_DURATION, ease: 'linear' }}
-                    key={`${currentEmoji.char}-timer`}
-                  />
-                  <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 1, repeat: Infinity, repeatType: 'mirror' }}
-                    className="text-8xl md:text-9xl"
-                  >
-                    {currentEmoji.char}
-                  </motion.div>
+                <div className="w-full max-w-md">
+                  <Progress value={(timeLeft / ROUND_DURATION) * 100} className="h-4 [&>div]:bg-primary" />
                 </div>
+                
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 1, repeat: Infinity, repeatType: 'mirror' }}
+                  className="text-8xl md:text-9xl"
+                >
+                  {currentEmoji.char}
+                </motion.div>
+
                 <div className="grid grid-cols-2 gap-4 w-full max-w-md">
                   {options.map((option, index) => (
                     <motion.div key={option} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
