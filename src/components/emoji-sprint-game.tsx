@@ -12,6 +12,7 @@ import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Award, BarChart, Trophy, X, Rocket, Compass, BookOpen } from 'lucide-react';
+import { FloatingEmojis } from './floating-emojis';
 
 const ROUND_DURATION = 5;
 
@@ -268,48 +269,58 @@ export function EmojiSprintGame() {
       default:
         return (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-center flex flex-col items-center gap-8 w-full"
+            className="text-center flex flex-col items-center justify-center gap-8 w-full h-full"
           >
-            <div className="flex flex-col items-center gap-2">
-              <h1 className="text-7xl font-bold tracking-tighter text-white">Emoji Sprint</h1>
-              <p className="text-xl text-gray-400 max-w-lg">A fast-paced guessing game to test your emoji knowledge and speed.</p>
+            <div className="relative flex flex-col items-center gap-4">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tighter text-white"
+              >
+                Emoji Sprint
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-lg md:text-xl text-gray-400 max-w-lg"
+              >
+                A fast-paced guessing game to test your emoji knowledge and speed.
+              </motion.p>
             </div>
-            <div className="grid md:grid-cols-3 gap-6 w-full max-w-4xl mt-8">
-              <Card className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/70 hover:border-primary transition-all cursor-pointer" onClick={startGame}>
-                <CardHeader>
-                  <Rocket className="h-10 w-10 text-primary mb-4" />
-                  <CardTitle className="text-2xl">Start Game</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-400">Jump right into the action and start guessing.</p>
-                </CardContent>
-              </Card>
-              <Link href="/discover" className="block">
-                <Card className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/70 hover:border-primary transition-all h-full">
-                  <CardHeader>
-                    <Compass className="h-10 w-10 text-primary mb-4" />
-                    <CardTitle className="text-2xl">Emoji Explorer</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-400">Browse and learn about hundreds of emojis.</p>
-                  </CardContent>
-                </Card>
-              </Link>
-              <Link href="/history" className="block">
-                <Card className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/70 hover:border-primary transition-all h-full">
-                  <CardHeader>
-                    <BookOpen className="h-10 w-10 text-primary mb-4" />
-                    <CardTitle className="text-2xl">The Story of Emoji</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-400">Journey through the fascinating history of emoji.</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+            >
+              <Button onClick={startGame} size="lg" className="text-lg px-8 py-6">
+                <Rocket className="mr-2 h-5 w-5" />
+                Start Game
+              </Button>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="flex gap-6 mt-8"
+            >
+              <Button asChild variant="link" className="text-gray-400 hover:text-white">
+                <Link href="/discover">
+                  <Compass className="mr-2 h-4 w-4" />
+                  Emoji Explorer
+                </Link>
+              </Button>
+              <Button asChild variant="link" className="text-gray-400 hover:text-white">
+                <Link href="/history">
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  The Story of Emoji
+                </Link>
+              </Button>
+            </motion.div>
           </motion.div>
         );
     }
@@ -317,11 +328,12 @@ export function EmojiSprintGame() {
 
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden transition-colors duration-500",
-      gameState === 'start' ? 'bg-black text-gray-100' : 'bg-background text-foreground',
+      "flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden transition-colors duration-500 relative",
+      gameState === 'start' ? 'bg-black text-gray-100 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]' : 'bg-background text-foreground',
       flash === 'correct' ? 'bg-green-500/20' : undefined,
       flash === 'wrong' ? 'bg-red-500/20' : undefined
     )}>
+      {gameState === 'start' && <FloatingEmojis />}
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
