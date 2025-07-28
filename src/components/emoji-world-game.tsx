@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Award, BarChart, Crown } from 'lucide-react';
+import { Award, BarChart, Crown, ArrowLeft } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const ROUND_DURATION = 5;
@@ -350,11 +350,19 @@ export function EmojiWorldGame() {
       <div className="absolute top-4 right-4 z-20">
         <ThemeToggle />
       </div>
-      <div className="absolute top-4 left-4 flex flex-col sm:flex-row gap-x-6 items-start sm:items-center text-2xl font-semibold z-20">
-        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
-          <Award className="h-7 w-7 text-yellow-400" />
-          <AnimatedStat value={score} />
-        </motion.div>
+      <div className="absolute top-4 left-4 flex items-center gap-4 z-20">
+        {gameState === 'playing' && (
+          <Button onClick={goToMainMenu} variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+        )}
+        <div className="text-2xl font-semibold">
+          <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
+            <Award className="h-7 w-7 text-yellow-400" />
+            <AnimatedStat value={score} />
+          </motion.div>
+        </div>
       </div>
       <main className="flex-grow flex items-center justify-center w-full">
         {renderGameState()}
