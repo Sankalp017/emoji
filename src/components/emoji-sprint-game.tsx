@@ -282,6 +282,11 @@ export function EmojiSprintGame() {
                   Discover Emojis
                 </Link>
               </Button>
+              <Button asChild variant="secondary" size="lg">
+                <Link href="/history">
+                  Emoji History
+                </Link>
+              </Button>
             </div>
           </motion.div>
         );
