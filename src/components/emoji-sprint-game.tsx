@@ -4,14 +4,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import { EMOJIS, Emoji } from '@/lib/emojis';
-import { shuffle } from '@/lib/utils';
+import { cn, shuffle } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './theme-toggle';
 import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Award, BarChart, Trophy, X } from 'lucide-react';
+import { Award, BarChart, Trophy, X, Rocket, Compass, BookOpen } from 'lucide-react';
 
 const ROUND_DURATION = 5;
 
@@ -268,24 +268,47 @@ export function EmojiSprintGame() {
       default:
         return (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center flex flex-col items-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center flex flex-col items-center gap-8 w-full"
           >
-            <h1 className="text-6xl font-bold tracking-tighter">Emoji Sprint</h1>
-            <p className="text-xl text-muted-foreground">Guess the mood before time runs out!</p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Button onClick={startGame} size="lg">Start Game</Button>
-              <Button asChild variant="secondary" size="lg">
-                <Link href="/discover">
-                  Discover Emojis
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="lg">
-                <Link href="/history">
-                  Emoji History
-                </Link>
-              </Button>
+            <div className="flex flex-col items-center gap-2">
+              <h1 className="text-7xl font-bold tracking-tighter text-white">Emoji Sprint</h1>
+              <p className="text-xl text-gray-400 max-w-lg">A fast-paced guessing game to test your emoji knowledge and speed.</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6 w-full max-w-4xl mt-8">
+              <Card className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/70 hover:border-primary transition-all cursor-pointer" onClick={startGame}>
+                <CardHeader>
+                  <Rocket className="h-10 w-10 text-primary mb-4" />
+                  <CardTitle className="text-2xl">Start Game</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-400">Jump right into the action and start guessing.</p>
+                </CardContent>
+              </Card>
+              <Link href="/discover" className="block">
+                <Card className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/70 hover:border-primary transition-all h-full">
+                  <CardHeader>
+                    <Compass className="h-10 w-10 text-primary mb-4" />
+                    <CardTitle className="text-2xl">Emoji Explorer</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-400">Browse and learn about hundreds of emojis.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link href="/history" className="block">
+                <Card className="bg-gray-900/50 border-gray-700 text-white hover:bg-gray-800/70 hover:border-primary transition-all h-full">
+                  <CardHeader>
+                    <BookOpen className="h-10 w-10 text-primary mb-4" />
+                    <CardTitle className="text-2xl">The Story of Emoji</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-400">Journey through the fascinating history of emoji.</p>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </motion.div>
         );
@@ -293,9 +316,12 @@ export function EmojiSprintGame() {
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen text-foreground p-4 overflow-hidden transition-colors duration-500 ${
-      flash === 'correct' ? 'bg-green-500/20' : flash === 'wrong' ? 'bg-red-500/20' : 'bg-background'
-    }`}>
+    <div className={cn(
+      "flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden transition-colors duration-500",
+      gameState === 'start' ? 'bg-black text-gray-100' : 'bg-background text-foreground',
+      flash === 'correct' ? 'bg-green-500/20' : undefined,
+      flash === 'wrong' ? 'bg-red-500/20' : undefined
+    )}>
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
