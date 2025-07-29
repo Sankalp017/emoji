@@ -121,29 +121,30 @@ export default function DiscoverPage() {
       <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 pt-[80px]">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
-            <div className="mt-8 flex justify-center">
-              <Card className="max-w-2xl w-full bg-card text-card-foreground shadow-2xl border-2 border-primary/50 rounded-xl overflow-hidden">
-                <CardHeader className="text-center bg-primary/10 p-6">
-                  <div className="text-8xl mb-4">🇵🇸</div>
-                  <CardTitle className="text-4xl font-bold text-primary">Palestine</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center space-y-4 p-6">
-                  <p className="font-extrabold text-2xl text-primary mb-4">🇵🇸 Free Palestine 🇵🇸</p>
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    For over 75 years, Palestinians have lived under
-                    occupation, apartheid, and displacement. Generations have
-                    faced restrictions on movement, lack of access to basic
-                    rights, and military violence. This is a small reminder that
-                    symbols carry meaning and silence is complicity. Learn.
-                    Share. Act.
+            <div className="mt-8 flex justify-center p-4">
+              <Card className="w-full max-w-xl bg-card text-card-foreground shadow-lg border rounded-2xl">
+                <CardContent className="p-8 text-center">
+                  <div className="flex flex-col items-center gap-4 mb-6">
+                    <span className="text-8xl">🇵🇸</span>
+                    <h2 className="text-4xl font-bold tracking-tight text-primary">
+                      Free Palestine
+                    </h2>
+                  </div>
+                  <p className="text-lg text-muted-foreground leading-relaxed max-w-prose mx-auto">
+                    For over 75 years, Palestinians have endured occupation,
+                    apartheid, and displacement. This is a reminder that
+                    symbols carry weight and silence is complicity.
                   </p>
-                  <Button asChild className="mt-6" variant="default">
+                  <p className="mt-4 text-lg font-semibold text-muted-foreground">
+                    Learn. Share. Act.
+                  </p>
+                  <Button asChild size="lg" className="mt-8">
                     <Link
                       href="https://www.amnesty.org/en/latest/news/2022/02/israels-apartheid-against-palestinians-a-cruel-system-of-domination-and-a-crime-against-humanity/"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      📚 Learn More
+                      Learn More from Amnesty International
                     </Link>
                   </Button>
                 </CardContent>
