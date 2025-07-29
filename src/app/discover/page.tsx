@@ -29,7 +29,8 @@ import {
   DialogTrigger,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
+}
+from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -118,7 +119,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className="p-4 sm:p-6 md:p-8 pt-[300px]">
+      <div className="p-4 sm:p-6 md:p-8 pt-[220px]">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
