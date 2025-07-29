@@ -66,15 +66,6 @@ export default function DiscoverPage() {
   const categories = ["All", ...EMOJI_CATEGORIES.map((c) => c.name)];
   const isIsraelSearch = searchTerm.toLowerCase().trim() === "israel";
 
-  // Calculate the approximate height of the sticky header and filter section
-  // Header: h-16 (64px) + p-4 (16px top/bottom) = ~72px
-  // Sticky section: py-4 (16px top/bottom) + h1 (4xl ~36px) + p (mt-2 ~20px) + Input (h-10 ~40px) + mb-4 (16px) + ScrollArea (buttons h-10 ~40px) + pb-2 (8px)
-  // Total sticky section content height: 36 + 20 + 40 + 16 + 40 + 8 = 160px
-  // Total sticky section with its own py-4: 160px + 32px = 192px
-  // Combined height for padding-top: 72px (header) + 192px (sticky section) = 264px
-  // Let's use a slightly larger value to be safe and account for potential small variations.
-  const paddingTopValue = "pt-[272px]"; // Adjusted based on re-calculation
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-background/80 backdrop-blur-sm h-16">
@@ -88,7 +79,7 @@ export default function DiscoverPage() {
       </header>
 
       {/* Sticky container for title, search, and categories */}
-      <div className="sticky top-[64px] w-full bg-background/95 backdrop-blur-sm z-40 py-4 border-b border-border">
+      <div className="sticky top-[64px] w-full bg-background/95 backdrop-blur-sm z-40 pt-4 pb-3 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="text-center mb-4">
             <h1 className="text-4xl font-bold tracking-tighter">
@@ -127,7 +118,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className={`p-4 sm:p-6 md:p-8 ${paddingTopValue}`}>
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
