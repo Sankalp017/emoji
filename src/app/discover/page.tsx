@@ -66,7 +66,7 @@ export default function DiscoverPage() {
         <ThemeToggle />
       </header>
 
-      <div className="p-4 sm:p-6 md:p-8 pt-24">
+      <div className="p-4 sm:p-6 md:p-8 pt-32"> {/* Increased padding-top here */}
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-4">
             <h1 className="text-4xl font-bold tracking-tighter">
@@ -184,8 +184,8 @@ export default function DiscoverPage() {
                               <span className="text-base text-left">{use}</span>
                             </CardContent>
                           </Card>
-                        </Card>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
 
@@ -194,9 +194,8 @@ export default function DiscoverPage() {
                       <Button variant="outline">Close</Button>
                     </DrawerClose>
                   </DrawerFooter>
-                </div>
-              </DrawerContent>
-            )}
+                </DrawerContent>
+              )}
             </Drawer>
           )}
         </div>
