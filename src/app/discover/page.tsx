@@ -79,7 +79,7 @@ export default function DiscoverPage() {
       </header>
 
       {/* Sticky container for title, search, and categories */}
-      <div className="sticky top-[64px] w-full bg-background/95 backdrop-blur-sm z-40 pt-4 pb-5 border-b border-border">
+      <div className="sticky top-[64px] w-full bg-background/95 backdrop-blur-sm z-40 pt-4 pb-20 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="text-center mb-4">
             <h1 className="text-4xl font-bold tracking-tighter">
@@ -118,7 +118,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8">
+      <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 pt-[343px]">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
