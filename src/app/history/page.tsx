@@ -110,16 +110,10 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
 export default function HistoryPage() {
   const { isEnabled, toggleNarration, speak } = useNarration();
   const [skinTone, setSkinTone] = useState(2);
-  const [isEmojiVisible, setIsEmojiVisible] = useState(true);
   const skinToneModifiers = ["", "🏻", "🏼", "🏽", "🏾", "🏿"];
 
   const handleSkinToneChange = (value: number[]) => {
-    setIsEmojiVisible(false);
-
-    setTimeout(() => {
-      setSkinTone(value[0]);
-      setIsEmojiVisible(true);
-    }, 10);
+    setSkinTone(value[0]);
   };
 
   useEffect(() => {
@@ -275,11 +269,14 @@ export default function HistoryPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="text-7xl p-4 bg-muted rounded-lg text-center h-[100px] flex items-center justify-center">
-                  {isEmojiVisible && (
-                    <span>
-                      👋{skinToneModifiers[skinTone]}
+                  {skinToneModifiers.map((modifier, index) => (
+                    <span
+                      key={index}
+                      style={{ display: index === skinTone ? "inline" : "none" }}
+                    >
+                      👋{modifier}
                     </span>
-                  )}
+                  ))}
                 </div>
                 <Slider defaultValue={[2]} min={0} max={5} step={1} onValueChange={handleSkinToneChange} />
                 <div className="flex justify-around gap-4 text-4xl pt-4">
