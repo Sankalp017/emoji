@@ -118,7 +118,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 pt-[50px]">
+      <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 pt-[80px]">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
