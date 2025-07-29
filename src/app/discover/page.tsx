@@ -245,7 +245,7 @@ export default function DiscoverPage() {
 
                     {selectedEmoji && (
                       <DrawerContent>
-                        <div className="mx-auto w-full max-w-md">
+                        <div className="mx-auto w-full max-w-md p-4">
                           <div className="text-center">
                             <div className="text-8xl mb-4">{selectedEmoji.char}</div>
                             <DrawerHeader className="p-0">
@@ -274,7 +274,7 @@ export default function DiscoverPage() {
                             </div>
                           </div>
 
-                          <DrawerFooter className="pt-6">
+                          <DrawerFooter className="pt-6 px-0">
                             <DrawerClose asChild>
                               <Button variant="outline">Close</Button>
                             </DrawerClose>
