@@ -264,7 +264,7 @@ export default function HistoryPage() {
                 <CardTitle>Representation Matters</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="text-7xl p-4 bg-muted rounded-lg text-center">
+                <div key={skinTone} className="text-7xl p-4 bg-muted rounded-lg text-center">
                   👋{skinToneModifiers[skinTone]}
                 </div>
                 <Slider defaultValue={[2]} min={0} max={5} step={1} onValueChange={(value) => setSkinTone(value[0])} />
