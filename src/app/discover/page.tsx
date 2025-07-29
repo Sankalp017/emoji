@@ -66,9 +66,18 @@ export default function DiscoverPage() {
   const categories = ["All", ...EMOJI_CATEGORIES.map((c) => c.name)];
   const isIsraelSearch = searchTerm.toLowerCase().trim() === "israel";
 
+  // Calculate the approximate height of the sticky header and filter section
+  // Header: h-16 (64px) + p-4 (16px top/bottom) = ~72px
+  // Sticky section: py-4 (16px top/bottom) + h1 (4xl ~36px) + p (mt-2 ~20px) + Input (h-10 ~40px) + mb-4 (16px) + ScrollArea (buttons h-10 ~40px) + pb-2 (8px)
+  // Total sticky section content height: 36 + 20 + 40 + 16 + 40 + 8 = 160px
+  // Total sticky section with its own py-4: 160px + 32px = 192px
+  // Combined height for padding-top: 72px (header) + 192px (sticky section) = 264px
+  // Let's use a slightly larger value to be safe and account for potential small variations.
+  const paddingTopValue = "pt-[272px]"; // Adjusted based on re-calculation
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-background/80 backdrop-blur-sm">
+      <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-background/80 backdrop-blur-sm h-16">
         <Button asChild variant="outline">
           <Link href="/">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -79,7 +88,7 @@ export default function DiscoverPage() {
       </header>
 
       {/* Sticky container for title, search, and categories */}
-      <div className="sticky top-[72px] bg-background/95 backdrop-blur-sm z-40 py-4">
+      <div className="sticky top-[64px] w-full bg-background/95 backdrop-blur-sm z-40 py-4 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="text-center mb-4">
             <h1 className="text-4xl font-bold tracking-tighter">
@@ -118,7 +127,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className="p-4 sm:p-6 md:p-8 pt-[286px]">
+      <div className={`p-4 sm:p-6 md:p-8 ${paddingTopValue}`}>
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
@@ -151,105 +160,47 @@ export default function DiscoverPage() {
             </div>
           ) : (
             <>
-              {isDesktop ? (
-                <Dialog
-                  open={!!selectedEmoji}
-                  onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
-                >
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-                    {filteredEmojis.map((emoji) => (
-                      <DialogTrigger
-                        asChild
-                        key={emoji.char}
-                        onClick={() => setSelectedEmoji(emoji)}
-                      >
-                        <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
-                          <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
-                            <span className="text-4xl">{emoji.char}</span>
-                            <p className="text-xs font-medium text-muted-foreground">
-                              {emoji.name}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </DialogTrigger>
-                    ))}
-                  </div>
-
-                  {selectedEmoji && (
-                    <DialogContent className="sm:max-w-[425px]">
-                      <div className="text-center">
-                        <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-                        <DialogHeader>
-                          <DialogTitle className="text-3xl font-bold">
-                            {selectedEmoji.name}
-                          </DialogTitle>
-                          <DialogDescription className="text-lg text-muted-foreground mt-2">
-                            {selectedEmoji.description}
-                          </DialogDescription>
-                        </DialogHeader>
-                      </div>
-
-                      <div className="mt-6">
-                        <h3 className="font-semibold mb-3 text-xl text-center">
-                          Example Usage
-                        </h3>
-                        <div className="space-y-3">
-                          {selectedEmoji.usage.map((use, index) => (
-                            <Card key={index} className="bg-muted/50">
-                              <CardContent className="p-3 flex items-start gap-3">
-                                <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
-                                <span className="text-base text-left">{use}</span>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      </div>
-
-                      <DialogFooter className="pt-6">
-                        <DialogClose asChild>
-                          <Button variant="outline">Close</Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  )}
-                </Dialog>
+              {filteredEmojis.length === 0 && searchTerm !== "" ? (
+                <div className="text-center text-muted-foreground text-lg mt-16">
+                  No emojis found for "{searchTerm}". Try a different search!
+                </div>
               ) : (
-                <Drawer
-                  open={!!selectedEmoji}
-                  onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
-                >
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-                    {filteredEmojis.map((emoji) => (
-                      <DrawerTrigger
-                        asChild
-                        key={emoji.char}
-                        onClick={() => setSelectedEmoji(emoji)}
-                      >
-                        <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
-                          <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
-                            <span className="text-4xl">{emoji.char}</span>
-                            <p className="text-xs font-medium text-muted-foreground">
-                              {emoji.name}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </DrawerTrigger>
-                    ))}
-                  </div>
+                isDesktop ? (
+                  <Dialog
+                    open={!!selectedEmoji}
+                    onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
+                  >
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                      {filteredEmojis.map((emoji) => (
+                        <DialogTrigger
+                          asChild
+                          key={emoji.char}
+                          onClick={() => setSelectedEmoji(emoji)}
+                        >
+                          <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                            <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
+                              <span className="text-4xl">{emoji.char}</span>
+                              <p className="text-xs font-medium text-muted-foreground">
+                                {emoji.name}
+                              </p>
+                            </CardContent>
+                          </Card>
+                        </DialogTrigger>
+                      ))}
+                    </div>
 
-                  {selectedEmoji && (
-                    <DrawerContent>
-                      <div className="mx-auto w-full max-w-md">
+                    {selectedEmoji && (
+                      <DialogContent className="sm:max-w-[425px]">
                         <div className="text-center">
                           <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-                          <DrawerHeader className="p-0">
-                            <DrawerTitle className="text-3xl font-bold">
+                          <DialogHeader>
+                            <DialogTitle className="text-3xl font-bold">
                               {selectedEmoji.name}
-                            </DrawerTitle>
-                            <DrawerDescription className="text-lg text-muted-foreground mt-2">
+                            </DialogTitle>
+                            <DialogDescription className="text-lg text-muted-foreground mt-2">
                               {selectedEmoji.description}
-                            </DrawerDescription>
-                          </DrawerHeader>
+                            </DialogDescription>
+                          </DialogHeader>
                         </div>
 
                         <div className="mt-6">
@@ -268,15 +219,79 @@ export default function DiscoverPage() {
                           </div>
                         </div>
 
-                        <DrawerFooter className="pt-6">
-                          <DrawerClose asChild>
+                        <DialogFooter className="pt-6">
+                          <DialogClose asChild>
                             <Button variant="outline">Close</Button>
-                          </DrawerClose>
-                        </DrawerFooter>
-                      </div>
-                    </DrawerContent>
-                  )}
-                </Drawer>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    )}
+                  </Dialog>
+                ) : (
+                  <Drawer
+                    open={!!selectedEmoji}
+                    onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
+                  >
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                      {filteredEmojis.map((emoji) => (
+                        <DrawerTrigger
+                          asChild
+                          key={emoji.char}
+                          onClick={() => setSelectedEmoji(emoji)}
+                        >
+                          <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                            <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
+                              <span className="text-4xl">{emoji.char}</span>
+                              <p className="text-xs font-medium text-muted-foreground">
+                                {emoji.name}
+                              </p>
+                            </CardContent>
+                          </Card>
+                        </DrawerTrigger>
+                      ))}
+                    </div>
+
+                    {selectedEmoji && (
+                      <DrawerContent>
+                        <div className="mx-auto w-full max-w-md">
+                          <div className="text-center">
+                            <div className="text-8xl mb-4">{selectedEmoji.char}</div>
+                            <DrawerHeader className="p-0">
+                              <DrawerTitle className="text-3xl font-bold">
+                                {selectedEmoji.name}
+                              </DrawerTitle>
+                              <DrawerDescription className="text-lg text-muted-foreground mt-2">
+                                {selectedEmoji.description}
+                              </DrawerDescription>
+                            </DrawerHeader>
+                          </div>
+
+                          <div className="mt-6">
+                            <h3 className="font-semibold mb-3 text-xl text-center">
+                              Example Usage
+                            </h3>
+                            <div className="space-y-3">
+                              {selectedEmoji.usage.map((use, index) => (
+                                <Card key={index} className="bg-muted/50">
+                                  <CardContent className="p-3 flex items-start gap-3">
+                                    <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
+                                    <span className="text-base text-left">{use}</span>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+
+                          <DrawerFooter className="pt-6">
+                            <DrawerClose asChild>
+                              <Button variant="outline">Close</Button>
+                            </DrawerClose>
+                          </DrawerFooter>
+                        </div>
+                      </DrawerContent>
+                    )}
+                  </Drawer>
+                )
               )}
             </>
           )}
