@@ -118,7 +118,7 @@ export default function DiscoverPage() {
                     occupation, apartheid, and displacement. Generations have
                     faced restrictions on movement, lack of access to basic
                     rights, and military violence. This is a small reminder that
-                    symbols carry meaning — and silence is complicity. Learn.
+                    symbols carry meaning and silence is complicity. Learn.
                     Share. Act.
                   </p>
                   <Button asChild className="mt-6" variant="default">
