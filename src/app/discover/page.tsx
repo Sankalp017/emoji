@@ -33,14 +33,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"; // Corrected import syntax
-import { useMediaQuery } from "@/hooks/use-media-query"; // Import the new hook
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function DiscoverPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState<Emoji | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const isDesktop = useMediaQuery("(min-width: 768px)"); // Check for desktop screens
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const allEmojis = useMemo(() => EMOJI_CATEGORIES.flatMap(c => c.emojis), []);
 
@@ -117,8 +117,8 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      {/* Main content area, with padding-top to offset the sticky header */}
-      <div className="p-4 sm:p-6 md:p-8 pt-[292px]">
+      {/* Main content area, with adjusted padding-top to offset the sticky header */}
+      <div className="p-4 sm:p-6 md:p-8 pt-[280px]">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
@@ -179,17 +179,17 @@ export default function DiscoverPage() {
                     <DialogContent className="sm:max-w-[425px]">
                       <div className="text-center">
                         <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-                        <DialogHeader className="px-4"> {/* Added px-4 */}
+                        <DialogHeader> {/* Removed px-4 */}
                           <DialogTitle className="text-3xl font-bold">
                             {selectedEmoji.name}
                           </DialogTitle>
-                          <DialogDescription className="text-lg text-muted-foreground mt-2"> {/* Removed px-4 */}
+                          <DialogDescription className="text-lg text-muted-foreground mt-2">
                             {selectedEmoji.description}
                           </DialogDescription>
                         </DialogHeader>
                       </div>
 
-                      <div className="mt-6 px-4"> {/* Added px-4 */}
+                      <div className="mt-6"> {/* Removed px-4 */}
                         <h3 className="font-semibold mb-3 text-xl text-center">
                           Example Usage
                         </h3>
@@ -205,7 +205,7 @@ export default function DiscoverPage() {
                         </div>
                       </div>
 
-                      <DialogFooter className="pt-6 px-4"> {/* Added px-4 */}
+                      <DialogFooter className="pt-6"> {/* Removed px-4 */}
                         <DialogClose asChild>
                           <Button variant="outline">Close</Button>
                         </DialogClose>
@@ -239,14 +239,14 @@ export default function DiscoverPage() {
 
                   {selectedEmoji && (
                     <DrawerContent>
-                      <div className="mx-auto w-full max-w-md p-4">
+                      <div className="mx-auto w-full max-w-md"> {/* Removed p-4 */}
                         <div className="text-center">
                           <div className="text-8xl mb-4">{selectedEmoji.char}</div>
                           <DrawerHeader className="p-0">
                             <DrawerTitle className="text-3xl font-bold">
                               {selectedEmoji.name}
                             </DrawerTitle>
-                            <DrawerDescription className="text-lg text-muted-foreground mt-2 px-4">
+                            <DrawerDescription className="text-lg text-muted-foreground mt-2"> {/* Removed px-4 */}
                               {selectedEmoji.description}
                             </DrawerDescription>
                           </DrawerHeader>
@@ -267,13 +267,13 @@ export default function DiscoverPage() {
                             ))}
                           </div>
                         </div>
-                      </div>
 
-                      <DrawerFooter className="pt-6 px-0">
-                        <DrawerClose asChild>
-                          <Button variant="outline">Close</Button>
-                        </DrawerClose>
-                      </DrawerFooter>
+                        <DrawerFooter className="pt-6"> {/* Removed px-0 */}
+                          <DrawerClose asChild>
+                            <Button variant="outline">Close</Button>
+                          </DrawerClose>
+                        </DrawerFooter>
+                      </div>
                     </DrawerContent>
                   )}
                 </Drawer>
