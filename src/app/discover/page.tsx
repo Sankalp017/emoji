@@ -4,7 +4,12 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { EMOJI_CATEGORIES, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Drawer,
   DrawerContent,
@@ -47,6 +52,7 @@ export default function DiscoverPage() {
   }, [searchTerm, selectedCategory, allEmojis]);
 
   const categories = ["All", ...EMOJI_CATEGORIES.map((c) => c.name)];
+  const isIsraelSearch = searchTerm.toLowerCase().trim() === "israel";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -60,7 +66,7 @@ export default function DiscoverPage() {
         <ThemeToggle />
       </header>
 
-      <div className="p-4 sm:p-6 md:p-8 pt-20">
+      <div className="p-4 sm:p-6 md:p-8 pt-24">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-4">
             <h1 className="text-4xl font-bold tracking-tighter">
@@ -98,55 +104,86 @@ export default function DiscoverPage() {
             </ScrollArea>
           </div>
 
-          <Drawer
-            open={!!selectedEmoji}
-            onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
-          >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-4">
-              {filteredEmojis.map((emoji) => (
-                <DrawerTrigger
-                  asChild
-                  key={emoji.char}
-                  onClick={() => setSelectedEmoji(emoji)}
-                >
-                  <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
-                    <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
-                      <span className="text-4xl">{emoji.char}</span>
-                      <p className="text-xs font-medium text-muted-foreground">
-                        {emoji.name}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </DrawerTrigger>
-              ))}
+          {isIsraelSearch ? (
+            <div className="mt-8 flex justify-center">
+              <Card className="max-w-2xl w-full">
+                <CardHeader className="text-center">
+                  <div className="text-6xl mb-4">🇵🇸</div>
+                  <CardTitle className="text-3xl">Palestine</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center space-y-4 p-6">
+                  <p className="font-bold text-lg">🇵🇸 Free Palestine 🇵🇸</p>
+                  <p className="text-muted-foreground">
+                    For over 75 years, Palestinians have lived under
+                    occupation, apartheid, and displacement. Generations have
+                    faced restrictions on movement, lack of access to basic
+                    rights, and military violence. This is a small reminder that
+                    symbols carry meaning — and silence is complicity. Learn.
+                    Share. Act.
+                  </p>
+                  <Button asChild>
+                    <Link
+                      href="https://www.amnesty.org/en/latest/news/2022/02/israels-apartheid-against-palestinians-a-cruel-system-of-domination-and-a-crime-against-humanity/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      📚 Learn More
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
+          ) : (
+            <Drawer
+              open={!!selectedEmoji}
+              onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-4">
+                {filteredEmojis.map((emoji) => (
+                  <DrawerTrigger
+                    asChild
+                    key={emoji.char}
+                    onClick={() => setSelectedEmoji(emoji)}
+                  >
+                    <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                      <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
+                        <span className="text-4xl">{emoji.char}</span>
+                        <p className="text-xs font-medium text-muted-foreground">
+                          {emoji.name}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </DrawerTrigger>
+                ))}
+              </div>
 
-            {selectedEmoji && (
-              <DrawerContent>
-                <div className="mx-auto w-full max-w-md p-4">
-                  <div className="text-center">
-                    <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-                    <DrawerHeader className="p-0">
-                      <DrawerTitle className="text-3xl font-bold">
-                        {selectedEmoji.name}
-                      </DrawerTitle>
-                      <DrawerDescription className="text-lg text-muted-foreground mt-2 px-4">
-                        {selectedEmoji.description}
-                      </DrawerDescription>
-                    </DrawerHeader>
-                  </div>
+              {selectedEmoji && (
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-md p-4">
+                    <div className="text-center">
+                      <div className="text-8xl mb-4">{selectedEmoji.char}</div>
+                      <DrawerHeader className="p-0">
+                        <DrawerTitle className="text-3xl font-bold">
+                          {selectedEmoji.name}
+                        </DrawerTitle>
+                        <DrawerDescription className="text-lg text-muted-foreground mt-2 px-4">
+                          {selectedEmoji.description}
+                        </DrawerDescription>
+                      </DrawerHeader>
+                    </div>
 
-                  <div className="mt-6">
-                    <h3 className="font-semibold mb-3 text-xl text-center">
-                      Example Usage
-                    </h3>
-                    <div className="space-y-3">
-                      {selectedEmoji.usage.map((use, index) => (
-                        <Card key={index} className="bg-muted/50">
-                          <CardContent className="p-3 flex items-start gap-3">
-                            <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
-                            <span className="text-base text-left">{use}</span>
-                          </CardContent>
+                    <div className="mt-6">
+                      <h3 className="font-semibold mb-3 text-xl text-center">
+                        Example Usage
+                      </h3>
+                      <div className="space-y-3">
+                        {selectedEmoji.usage.map((use, index) => (
+                          <Card key={index} className="bg-muted/50">
+                            <CardContent className="p-3 flex items-start gap-3">
+                              <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
+                              <span className="text-base text-left">{use}</span>
+                            </CardContent>
+                          </Card>
                         </Card>
                       ))}
                     </div>
@@ -160,7 +197,8 @@ export default function DiscoverPage() {
                 </div>
               </DrawerContent>
             )}
-          </Drawer>
+            </Drawer>
+          )}
         </div>
       </div>
     </div>
