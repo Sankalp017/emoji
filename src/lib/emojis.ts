@@ -651,7 +651,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
       { char: "🇴🇲", name: "Flag: Oman", description: "The national flag of Oman.", usage: ["The jewel of Arabia.", "A country with a rich history and beautiful landscapes."] },
       { char: "🇵🇰", name: "Flag: Pakistan", description: "The national flag of Pakistan.", usage: ["The land of the pure.", "A country with a rich history and diverse culture."] },
       { char: "🇵🇼", name: "Flag: Palau", description: "The national flag of Palau.", usage: ["A paradise for divers.", "A beautiful island nation in the Pacific."] },
-      { char: "🇵🇸", name: "Flag: Palestinian Territories", description: "The flag of the Palestinian Territories.", usage: ["🇵🇸 Free Palestine 🇵🇸", "Solidarity with the Palestinian people.", "A symbol of resilience and hope."] },
+      { char: "🇵🇸", name: "Palestine", description: "The flag of the Palestinian Territories.", usage: ["🇵🇸 Free Palestine 🇵🇸", "Solidarity with the Palestinian people.", "A symbol of resilience and hope."] },
       { char: "🇵🇦", name: "Flag: Panama", description: "The national flag of Panama.", usage: ["The crossroads of the world.", "The famous Panama Canal."] },
       { char: "🇵🇬", name: "Flag: Papua New Guinea", description: "The national flag of Papua New Guinea.", usage: ["The land of the unexpected.", "A country with a rich culture and incredible biodiversity."] },
       { char: "🇵🇾", name: "Flag: Paraguay", description: "The national flag of Paraguay.", usage: ["The heart of South America.", "A country with a rich history and culture."] },
