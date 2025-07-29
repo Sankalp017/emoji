@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { EMOJIS, Emoji } from "@/lib/emojis";
+import { EMOJI_CATEGORIES, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -18,19 +18,35 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default function DiscoverPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState<Emoji | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const allEmojis = useMemo(() => EMOJI_CATEGORIES.flatMap(c => c.emojis), []);
 
   const filteredEmojis = useMemo(() => {
-    if (!searchTerm) return EMOJIS;
-    return EMOJIS.filter(
+    let emojisToFilter: Emoji[];
+
+    if (selectedCategory === "All") {
+      emojisToFilter = allEmojis;
+    } else {
+      emojisToFilter =
+        EMOJI_CATEGORIES.find((c) => c.name === selectedCategory)?.emojis || [];
+    }
+
+    if (!searchTerm) return emojisToFilter;
+
+    return emojisToFilter.filter(
       (emoji) =>
         emoji.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emoji.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm]);
+  }, [searchTerm, selectedCategory, allEmojis]);
+
+  const categories = ["All", ...EMOJI_CATEGORIES.map((c) => c.name)];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -44,27 +60,49 @@ export default function DiscoverPage() {
         <ThemeToggle />
       </header>
 
-      <div className="p-4 sm:p-6 md:p-8 pt-24">
+      <div className="p-4 sm:p-6 md:p-8 pt-20">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold tracking-tighter text-center mb-8">
-            Emoji Explorer
-          </h1>
+          <div className="text-center mb-4">
+            <h1 className="text-4xl font-bold tracking-tighter">
+              Emoji Explorer
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Browse {allEmojis.length} emojis across {EMOJI_CATEGORIES.length} categories.
+            </p>
+          </div>
 
-          <div className="mb-8">
-            <Input
-              type="text"
-              placeholder="Search by name or description..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-lg mx-auto"
-            />
+          <div className="sticky top-[72px] bg-background/95 backdrop-blur-sm z-40 py-4">
+            <div className="max-w-lg mx-auto mb-4">
+              <Input
+                type="text"
+                placeholder="Search by name or description..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <ScrollArea className="w-full whitespace-nowrap">
+              <div className="flex justify-center gap-2 pb-2">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    onClick={() => setSelectedCategory(category)}
+                    size="sm"
+                    className="shrink-0"
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
           </div>
 
           <Drawer
             open={!!selectedEmoji}
             onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-4">
               {filteredEmojis.map((emoji) => (
                 <DrawerTrigger
                   asChild
