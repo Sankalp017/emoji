@@ -66,8 +66,9 @@ export default function DiscoverPage() {
         <ThemeToggle />
       </header>
 
-      <div className="p-4 sm:p-6 md:p-8 pt-32"> {/* Increased padding-top here */}
-        <div className="max-w-7xl mx-auto">
+      {/* New sticky container for title, search, and categories */}
+      <div className="sticky top-[72px] bg-background/95 backdrop-blur-sm z-40 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="text-center mb-4">
             <h1 className="text-4xl font-bold tracking-tighter">
               Emoji Explorer
@@ -77,33 +78,36 @@ export default function DiscoverPage() {
             </p>
           </div>
 
-          <div className="sticky top-[72px] bg-background/95 backdrop-blur-sm z-40 py-4">
-            <div className="max-w-lg mx-auto mb-4">
-              <Input
-                type="text"
-                placeholder="Search by name or description..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <ScrollArea className="w-full whitespace-nowrap">
-              <div className="flex justify-center gap-2 pb-2">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    onClick={() => setSelectedCategory(category)}
-                    size="sm"
-                    className="shrink-0"
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+          <div className="max-w-lg mx-auto mb-4">
+            <Input
+              type="text"
+              placeholder="Search by name or description..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
+          <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex justify-center gap-2 pb-2">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  onClick={() => setSelectedCategory(category)}
+                  size="sm"
+                  className="shrink-0"
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
+      </div>
 
+      {/* Main content area, removed pt-32 as the sticky header now provides the offset */}
+      <div className="p-4 sm:p-6 md:p-8">
+        <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
               <Card className="max-w-2xl w-full bg-card text-card-foreground shadow-2xl border-2 border-primary/50 rounded-xl overflow-hidden">
