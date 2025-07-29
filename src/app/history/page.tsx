@@ -110,12 +110,16 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
 export default function HistoryPage() {
   const { isEnabled, toggleNarration, speak } = useNarration();
   const [skinTone, setSkinTone] = useState(2);
-  const [emojiKey, setEmojiKey] = useState(() => Math.random());
+  const [isEmojiVisible, setIsEmojiVisible] = useState(true);
   const skinToneModifiers = ["", "🏻", "🏼", "🏽", "🏾", "🏿"];
 
   const handleSkinToneChange = (value: number[]) => {
-    setSkinTone(value[0]);
-    setEmojiKey(Math.random()); // Force a new key to guarantee re-render
+    setIsEmojiVisible(false);
+
+    setTimeout(() => {
+      setSkinTone(value[0]);
+      setIsEmojiVisible(true);
+    }, 10);
   };
 
   useEffect(() => {
@@ -270,8 +274,12 @@ export default function HistoryPage() {
                 <CardTitle>Representation Matters</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div key={emojiKey} className="text-7xl p-4 bg-muted rounded-lg text-center">
-                  👋{skinToneModifiers[skinTone]}
+                <div className="text-7xl p-4 bg-muted rounded-lg text-center h-[100px] flex items-center justify-center">
+                  {isEmojiVisible && (
+                    <span>
+                      👋{skinToneModifiers[skinTone]}
+                    </span>
+                  )}
                 </div>
                 <Slider defaultValue={[2]} min={0} max={5} step={1} onValueChange={handleSkinToneChange} />
                 <div className="flex justify-around gap-4 text-4xl pt-4">
