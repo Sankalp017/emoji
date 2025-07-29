@@ -118,7 +118,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className="p-4 sm:p-6 md:p-8 pt-[280px]">
+      <div className="p-4 sm:p-6 md:p-8 pt-[230px]">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
@@ -156,7 +156,7 @@ export default function DiscoverPage() {
                   open={!!selectedEmoji}
                   onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
                 >
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4"> {/* Removed mt-4 */}
                     {filteredEmojis.map((emoji) => (
                       <DialogTrigger
                         asChild
@@ -179,7 +179,7 @@ export default function DiscoverPage() {
                     <DialogContent className="sm:max-w-[425px]">
                       <div className="text-center">
                         <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-                        <DialogHeader> {/* Removed px-4 */}
+                        <DialogHeader>
                           <DialogTitle className="text-3xl font-bold">
                             {selectedEmoji.name}
                           </DialogTitle>
@@ -189,7 +189,7 @@ export default function DiscoverPage() {
                         </DialogHeader>
                       </div>
 
-                      <div className="mt-6"> {/* Removed px-4 */}
+                      <div className="mt-6">
                         <h3 className="font-semibold mb-3 text-xl text-center">
                           Example Usage
                         </h3>
@@ -205,7 +205,7 @@ export default function DiscoverPage() {
                         </div>
                       </div>
 
-                      <DialogFooter className="pt-6"> {/* Removed px-4 */}
+                      <DialogFooter className="pt-6">
                         <DialogClose asChild>
                           <Button variant="outline">Close</Button>
                         </DialogClose>
@@ -218,7 +218,7 @@ export default function DiscoverPage() {
                   open={!!selectedEmoji}
                   onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
                 >
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4"> {/* Removed mt-4 */}
                     {filteredEmojis.map((emoji) => (
                       <DrawerTrigger
                         asChild
@@ -239,14 +239,14 @@ export default function DiscoverPage() {
 
                   {selectedEmoji && (
                     <DrawerContent>
-                      <div className="mx-auto w-full max-w-md"> {/* Removed p-4 */}
+                      <div className="mx-auto w-full max-w-md">
                         <div className="text-center">
                           <div className="text-8xl mb-4">{selectedEmoji.char}</div>
                           <DrawerHeader className="p-0">
                             <DrawerTitle className="text-3xl font-bold">
                               {selectedEmoji.name}
                             </DrawerTitle>
-                            <DrawerDescription className="text-lg text-muted-foreground mt-2"> {/* Removed px-4 */}
+                            <DrawerDescription className="text-lg text-muted-foreground mt-2">
                               {selectedEmoji.description}
                             </DrawerDescription>
                           </DrawerHeader>
@@ -268,7 +268,7 @@ export default function DiscoverPage() {
                           </div>
                         </div>
 
-                        <DrawerFooter className="pt-6"> {/* Removed px-0 */}
+                        <DrawerFooter className="pt-6">
                           <DrawerClose asChild>
                             <Button variant="outline">Close</Button>
                           </DrawerClose>
