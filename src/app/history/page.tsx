@@ -110,7 +110,13 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
 export default function HistoryPage() {
   const { isEnabled, toggleNarration, speak } = useNarration();
   const [skinTone, setSkinTone] = useState(2);
+  const [emojiKey, setEmojiKey] = useState(() => Math.random());
   const skinToneModifiers = ["", "🏻", "🏼", "🏽", "🏾", "🏿"];
+
+  const handleSkinToneChange = (value: number[]) => {
+    setSkinTone(value[0]);
+    setEmojiKey(Math.random()); // Force a new key to guarantee re-render
+  };
 
   useEffect(() => {
     if (isEnabled) {
@@ -264,10 +270,12 @@ export default function HistoryPage() {
                 <CardTitle>Representation Matters</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div key={skinTone} className="text-7xl p-4 bg-muted rounded-lg text-center">
-                  👋{skinToneModifiers[skinTone]}
+                <div className="text-7xl p-4 bg-muted rounded-lg text-center">
+                  <span key={emojiKey}>
+                    👋{skinToneModifiers[skinTone]}
+                  </span>
                 </div>
-                <Slider defaultValue={[2]} min={0} max={5} step={1} onValueChange={(value) => setSkinTone(value[0])} />
+                <Slider defaultValue={[2]} min={0} max={5} step={1} onValueChange={handleSkinToneChange} />
                 <div className="flex justify-around gap-4 text-4xl pt-4">
                   <Tooltip><TooltipTrigger><span>👩‍⚕️</span></TooltipTrigger><TooltipContent><p>Woman Health Worker</p></TooltipContent></Tooltip>
                   <Tooltip><TooltipTrigger><span>👨‍🚀</span></TooltipTrigger><TooltipContent><p>Man Astronaut</p></TooltipContent></Tooltip>
