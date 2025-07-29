@@ -118,7 +118,7 @@ export default function DiscoverPage() {
       </div>
 
       {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className="p-4 sm:p-6 md:p-8 pt-[230px]">
+      <div className="p-4 sm:p-6 md:p-8 pt-[200px]">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
@@ -156,7 +156,7 @@ export default function DiscoverPage() {
                   open={!!selectedEmoji}
                   onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
                 >
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4"> {/* Removed mt-4 */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
                     {filteredEmojis.map((emoji) => (
                       <DialogTrigger
                         asChild
@@ -218,7 +218,7 @@ export default function DiscoverPage() {
                   open={!!selectedEmoji}
                   onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
                 >
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4"> {/* Removed mt-4 */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
                     {filteredEmojis.map((emoji) => (
                       <DrawerTrigger
                         asChild
