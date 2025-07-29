@@ -33,7 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"; // Corrected import syntax
 import { useMediaQuery } from "@/hooks/use-media-query"; // Import the new hook
 
 export default function DiscoverPage() {
@@ -179,17 +179,17 @@ export default function DiscoverPage() {
                     <DialogContent className="sm:max-w-[425px]">
                       <div className="text-center">
                         <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-                        <DialogHeader className="p-0">
+                        <DialogHeader className="px-4"> {/* Added px-4 */}
                           <DialogTitle className="text-3xl font-bold">
                             {selectedEmoji.name}
                           </DialogTitle>
-                          <DialogDescription className="text-lg text-muted-foreground mt-2 px-4">
+                          <DialogDescription className="text-lg text-muted-foreground mt-2"> {/* Removed px-4 */}
                             {selectedEmoji.description}
                           </DialogDescription>
                         </DialogHeader>
                       </div>
 
-                      <div className="mt-6">
+                      <div className="mt-6 px-4"> {/* Added px-4 */}
                         <h3 className="font-semibold mb-3 text-xl text-center">
                           Example Usage
                         </h3>
@@ -205,7 +205,7 @@ export default function DiscoverPage() {
                         </div>
                       </div>
 
-                      <DialogFooter className="pt-6 px-0">
+                      <DialogFooter className="pt-6 px-4"> {/* Added px-4 */}
                         <DialogClose asChild>
                           <Button variant="outline">Close</Button>
                         </DialogClose>
