@@ -106,14 +106,14 @@ export default function DiscoverPage() {
 
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center">
-              <Card className="max-w-2xl w-full">
-                <CardHeader className="text-center">
-                  <div className="text-6xl mb-4">🇵🇸</div>
-                  <CardTitle className="text-3xl">Palestine</CardTitle>
+              <Card className="max-w-2xl w-full bg-card text-card-foreground shadow-2xl border-2 border-primary/50 rounded-xl overflow-hidden">
+                <CardHeader className="text-center bg-primary/10 p-6">
+                  <div className="text-8xl mb-4">🇵🇸</div>
+                  <CardTitle className="text-4xl font-bold text-primary">Palestine</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center space-y-4 p-6">
-                  <p className="font-bold text-lg">🇵🇸 Free Palestine 🇵🇸</p>
-                  <p className="text-muted-foreground">
+                  <p className="font-extrabold text-2xl text-primary mb-4">🇵🇸 Free Palestine 🇵🇸</p>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
                     For over 75 years, Palestinians have lived under
                     occupation, apartheid, and displacement. Generations have
                     faced restrictions on movement, lack of access to basic
@@ -121,7 +121,7 @@ export default function DiscoverPage() {
                     symbols carry meaning — and silence is complicity. Learn.
                     Share. Act.
                   </p>
-                  <Button asChild>
+                  <Button asChild className="mt-6" variant="default">
                     <Link
                       href="https://www.amnesty.org/en/latest/news/2022/02/israels-apartheid-against-palestinians-a-cruel-system-of-domination-and-a-crime-against-humanity/"
                       target="_blank"
