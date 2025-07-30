@@ -181,33 +181,41 @@ export default function DiscoverPage() {
   const isIsraelSearch = searchTerm.toLowerCase().trim() === "israel";
 
   const EmojiDetails = () => selectedEmoji && (
-    <>
-      <div className="text-center">
-        <div className="text-8xl mb-4">{selectedEmoji.char}</div>
+    <div className="w-full">
+      {/* Header Box */}
+      <div className="w-full bg-muted/50 rounded-xl p-6 text-center border">
+        <p className="text-8xl mb-4">{selectedEmoji.char}</p>
         <DrawerHeader className="p-0">
-          <DrawerTitle className="text-3xl font-bold text-center">
+          <DrawerTitle className="text-3xl font-bold">
             {selectedEmoji.name}
           </DrawerTitle>
-          <DrawerDescription className="text-lg text-muted-foreground mt-2 text-center">
+          <DrawerDescription className="text-lg text-muted-foreground mt-2 max-w-prose mx-auto">
             {selectedEmoji.description}
           </DrawerDescription>
         </DrawerHeader>
       </div>
 
+      {/* Usage Section */}
       <div className="mt-8 w-full">
-        <h3 className="font-semibold mb-4 text-xl text-center">
-          Example Usage
-        </h3>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex-grow border-t border-border"></div>
+          <h3 className="text-sm font-semibold text-muted-foreground tracking-widest uppercase shrink-0">
+            Example Usage
+          </h3>
+          <div className="flex-grow border-t border-border"></div>
+        </div>
         <div className="space-y-3">
           {selectedEmoji.usage.map((use, index) => (
-            <div key={index} className="border rounded-xl p-4 flex items-center gap-3 text-left w-full">
-              <MessageCircle className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-              <span className="text-base">{use}</span>
-            </div>
+            <Card key={index} className="bg-transparent border-dashed">
+              <CardContent className="p-4 flex items-start gap-4">
+                <MessageCircle className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+                <p className="text-base text-foreground">{use}</p>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 
   return (
@@ -320,12 +328,12 @@ export default function DiscoverPage() {
               }
             }}
           >
-            <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
-              <div className="mx-auto w-full max-w-md p-4 flex flex-col items-center">
+            <DrawerContent className="bg-background border-t">
+              <div className="mx-auto w-full max-w-2xl p-4 sm:p-6">
                 <EmojiDetails />
-                <DrawerFooter className="pt-6 px-0 w-full">
+                <DrawerFooter className="pt-8 px-0">
                   <DrawerClose asChild>
-                    <Button variant="outline" className="w-full">Close</Button>
+                    <Button variant="outline" size="lg" className="w-full">Close</Button>
                   </DrawerClose>
                 </DrawerFooter>
               </div>
