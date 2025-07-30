@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { EMOJI_CATEGORIES, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
@@ -33,11 +33,50 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function DiscoverPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedEmoji, setSelectedEmoji] = useState<Emoji | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const allEmojis = useMemo(() => EMOJI_CATEGORIES.flatMap(c => c.emojis), []);
+
+  const updateSuggestions = (value: string) => {
+    if (value.length > 0) {
+      const newSuggestions = allEmojis
+        .filter((emoji) =>
+          emoji.name.toLowerCase().startsWith(value.toLowerCase())
+        )
+        .map((emoji) => emoji.name)
+        .slice(0, 7); // Limit suggestions
+      setSuggestions(newSuggestions);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    updateSuggestions(value);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchTerm(suggestion);
+    setSuggestions([]);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setSuggestions([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const filteredEmojis = useMemo(() => {
     let emojisToFilter: Emoji[];
@@ -87,15 +126,35 @@ export default function DiscoverPage() {
             <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
               Browse {allEmojis.length} emojis across {EMOJI_CATEGORIES.length} categories.
             </p>
-            <div className="relative max-w-xl mx-auto mt-6 mb-6">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="relative max-w-xl mx-auto mt-6 mb-6" ref={searchContainerRef}>
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
               <Input
                 type="text"
                 placeholder="Search by name or description..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
+                onFocus={() => updateSuggestions(searchTerm)}
                 className="h-12 w-full rounded-full bg-muted/60 pl-12 pr-4 text-base focus-visible:ring-primary/50"
               />
+              {suggestions.length > 0 && (
+                <Card className="absolute top-full mt-2 w-full bg-card text-card-foreground shadow-lg border rounded-2xl z-50">
+                  <CardContent className="p-2">
+                    <ul className="flex flex-col">
+                      {suggestions.map((suggestion, index) => (
+                        <li key={index}>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start h-10 px-4 text-base"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                          >
+                            {suggestion}
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
             </div>
             <ScrollArea className="w-full whitespace-nowrap">
               <div className="flex justify-center gap-2 pb-2">
