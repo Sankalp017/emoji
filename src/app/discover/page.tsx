@@ -292,95 +292,107 @@ export default function DiscoverPage() {
 
       <main className="px-4 sm:px-6 md:px-8 py-8">
         <div className="max-w-7xl mx-auto">
-          {isIsraelSearch ? (
-            <div className="mt-8 flex justify-center p-4">
-              <Card className="w-full max-w-xl bg-card/80 backdrop-blur-lg text-card-foreground shadow-xl border border-white/10 rounded-2xl">
-                <CardContent className="p-8 text-center">
-                  <div className="flex flex-col items-center gap-4 mb-6">
-                    <span className="text-8xl">🇵🇸</span>
-                    <h2 className="text-4xl font-bold tracking-tight text-primary">
-                      Free Palestine
-                    </h2>
-                  </div>
-                  <p className="text-lg text-muted-foreground leading-relaxed max-w-prose mx-auto">
-                    For over 75 years, Palestinians have endured occupation,
-                    apartheid, and displacement. This is a reminder that
-                    symbols carry weight and silence is complicity.
-                  </p>
-                  <p className="mt-4 text-lg font-semibold text-muted-foreground">
-                    Learn. Share. Act.
-                  </p>
-                  <Button asChild size="lg" className="mt-8">
-                    <Link
-                      href="https://www.amnesty.org/en/latest/news/2022/02/israels-apartheid-against-palestinians-a-cruel-system-of-domination-and-a-crime-against-humanity/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Learn More from Amnesty International
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          ) : activeEasterEgg ? (
-            <div className="mt-8 flex justify-center p-4">
-              <Card className="w-full max-w-xl bg-card/80 backdrop-blur-lg text-card-foreground shadow-xl border border-white/10 rounded-2xl">
-                <CardContent className="p-8 text-center">
-                  <div className="flex flex-col items-center gap-4 mb-6">
-                    <span className="text-8xl">{activeEasterEgg.emoji}</span>
-                    <h2 className="text-4xl font-bold tracking-tight text-primary">
-                      {activeEasterEgg.title}
-                    </h2>
-                  </div>
-                  <p className="text-lg text-muted-foreground leading-relaxed max-w-prose mx-auto">
-                    {activeEasterEgg.description}
-                  </p>
-                  {activeEasterEgg.link && (
+          <Drawer
+            open={!!selectedEmoji}
+            onOpenChange={(isOpen) => {
+              if (!isOpen) {
+                setSelectedEmoji(null);
+              }
+            }}
+          >
+            <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
+              <div className="mx-auto w-full max-w-md p-4">
+                <EmojiDetails />
+                <DrawerFooter className="pt-6 px-0">
+                  <DrawerClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </div>
+            </DrawerContent>
+          </Drawer>
+
+          <AnimatePresence mode="wait">
+            {isIsraelSearch ? (
+              <motion.div
+                key="israel-search"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="mt-8 flex justify-center p-4"
+              >
+                <Card className="w-full max-w-xl bg-card/80 backdrop-blur-lg text-card-foreground shadow-xl border border-white/10 rounded-2xl">
+                  <CardContent className="p-8 text-center">
+                    <div className="flex flex-col items-center gap-4 mb-6">
+                      <span className="text-8xl">🇵🇸</span>
+                      <h2 className="text-4xl font-bold tracking-tight text-primary">
+                        Free Palestine
+                      </h2>
+                    </div>
+                    <p className="text-lg text-muted-foreground leading-relaxed max-w-prose mx-auto">
+                      For over 75 years, Palestinians have endured occupation,
+                      apartheid, and displacement. This is a reminder that
+                      symbols carry weight and silence is complicity.
+                    </p>
+                    <p className="mt-4 text-lg font-semibold text-muted-foreground">
+                      Learn. Share. Act.
+                    </p>
                     <Button asChild size="lg" className="mt-8">
                       <Link
-                        href={activeEasterEgg.link}
+                        href="https://www.amnesty.org/en/latest/news/2022/02/israels-apartheid-against-palestinians-a-cruel-system-of-domination-and-a-crime-against-humanity/"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {activeEasterEgg.linkText}
+                        Learn More from Amnesty International
                       </Link>
                     </Button>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          ) : (
-            <>
-              {filteredEmojis.length === 0 && searchTerm !== "" ? (
-                <div className="text-center text-muted-foreground text-lg mt-16">
-                  No emojis found for "{searchTerm}". Try a different search!
-                </div>
-              ) : (
-                <>
-                  <Drawer
-                    open={!!selectedEmoji}
-                    onOpenChange={(isOpen) => {
-                      if (!isOpen) {
-                        setSelectedEmoji(null);
-                      }
-                    }}
-                  >
-                    <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
-                      <div className="mx-auto w-full max-w-md p-4">
-                        <EmojiDetails />
-                        <DrawerFooter className="pt-6 px-0">
-                          <DrawerClose asChild>
-                            <Button variant="outline">Close</Button>
-                          </DrawerClose>
-                        </DrawerFooter>
-                      </div>
-                    </DrawerContent>
-                  </Drawer>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ) : activeEasterEgg ? (
+              <motion.div
+                key="easter-egg"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="mt-8 flex justify-center p-4"
+              >
+                <Card className="w-full max-w-xl bg-card/80 backdrop-blur-lg text-card-foreground shadow-xl border border-white/10 rounded-2xl">
+                  <CardContent className="p-8 text-center">
+                    <div className="flex flex-col items-center gap-4 mb-6">
+                      <span className="text-8xl">{activeEasterEgg.emoji}</span>
+                      <h2 className="text-4xl font-bold tracking-tight text-primary">
+                        {activeEasterEgg.title}
+                      </h2>
+                    </div>
+                    <p className="text-lg text-muted-foreground leading-relaxed max-w-prose mx-auto">
+                      {activeEasterEgg.description}
+                    </p>
+                    {activeEasterEgg.link && (
+                      <Button asChild size="lg" className="mt-8">
+                        <Link
+                          href={activeEasterEgg.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {activeEasterEgg.linkText}
+                        </Link>
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ) : (
+              <motion.div key="grid">
+                {filteredEmojis.length === 0 && searchTerm !== "" ? (
+                  <div className="text-center text-muted-foreground text-lg mt-16">
+                    No emojis found for "{searchTerm}". Try a different search!
+                  </div>
+                ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
                     <AnimatePresence>
                       {filteredEmojis.map((emoji) => (
                         <motion.div
-                          layout
                           key={emoji.char}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -406,10 +418,10 @@ export default function DiscoverPage() {
                       ))}
                     </AnimatePresence>
                   </div>
-                </>
-              )}
-            </>
-          )}
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
     </div>
