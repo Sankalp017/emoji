@@ -367,6 +367,11 @@ export function EmojiWorldGame() {
       <main className="flex-grow flex items-center justify-center w-full">
         {renderGameState()}
       </main>
+      {gameState === 'start' && (
+        <footer className="p-4 text-center text-sm text-muted-foreground">
+          Made with ❤️ by Sankalp Dharge
+        </footer>
+      )}
     </div>
   );
 }

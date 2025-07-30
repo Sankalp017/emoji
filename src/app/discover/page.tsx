@@ -382,10 +382,10 @@ export default function DiscoverPage() {
                         <motion.div
                           layout
                           key={emoji.char}
-                          initial={{ opacity: 0, y: 15 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -15 }}
-                          transition={{ duration: 0.25, ease: 'easeInOut' }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
                         >
                           <motion.div 
                             onClick={() => setSelectedEmoji(emoji)} 
