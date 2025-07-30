@@ -9,17 +9,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Drawer,
   DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerTrigger,
   DrawerFooter,
   DrawerClose,
 } from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const HighlightedText = ({ text, highlight }: { text: string; highlight: string }) => {
   if (!highlight.trim()) {
@@ -112,6 +115,7 @@ export default function DiscoverPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [activeEasterEgg, setActiveEasterEgg] = useState<typeof EASTER_EGGS[0]['content'] | null>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const allEmojis = useMemo(() => EMOJI_CATEGORIES.flatMap(c => c.emojis), []);
 
@@ -185,14 +189,14 @@ export default function DiscoverPage() {
       {/* Header Box */}
       <div className="w-full bg-muted/50 rounded-xl p-6 text-center border">
         <p className="text-8xl mb-4">{selectedEmoji.char}</p>
-        <DrawerHeader className="p-0">
-          <DrawerTitle className="text-3xl font-bold">
+        <div>
+          <h2 className="text-3xl font-bold">
             {selectedEmoji.name}
-          </DrawerTitle>
-          <DrawerDescription className="text-lg text-muted-foreground mt-2 max-w-prose mx-auto">
+          </h2>
+          <p className="text-lg text-muted-foreground mt-2 max-w-prose mx-auto">
             {selectedEmoji.description}
-          </DrawerDescription>
-        </DrawerHeader>
+          </p>
+        </div>
       </div>
 
       {/* Usage Section */}
@@ -215,6 +219,12 @@ export default function DiscoverPage() {
           ))}
         </div>
       </div>
+    </div>
+  );
+
+  const EmojiModalContent = (
+    <div className="mx-auto w-full max-w-2xl p-4 sm:p-6 flex flex-col items-center">
+      <EmojiDetails />
     </div>
   );
 
@@ -320,25 +330,29 @@ export default function DiscoverPage() {
 
       <main className="px-4 sm:px-6 md:px-8 py-8">
         <div className="max-w-7xl mx-auto">
-          <Drawer
-            open={!!selectedEmoji}
-            onOpenChange={(isOpen) => {
-              if (!isOpen) {
-                setSelectedEmoji(null);
-              }
-            }}
-          >
-            <DrawerContent className="bg-background border-t">
-              <div className="mx-auto w-full max-w-2xl p-4 sm:p-6">
-                <EmojiDetails />
+          {isDesktop ? (
+            <Dialog open={!!selectedEmoji} onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}>
+              <DialogContent className="bg-background border-t sm:max-w-2xl">
+                {EmojiModalContent}
+                <DialogFooter className="pt-8 px-0 w-full">
+                  <DialogClose asChild>
+                    <Button variant="outline" size="lg" className="w-full">Close</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <Drawer open={!!selectedEmoji} onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}>
+              <DrawerContent className="bg-background border-t">
+                {EmojiModalContent}
                 <DrawerFooter className="pt-8 px-0">
                   <DrawerClose asChild>
                     <Button variant="outline" size="lg" className="w-full">Close</Button>
                   </DrawerClose>
                 </DrawerFooter>
-              </div>
-            </DrawerContent>
-          </Drawer>
+              </DrawerContent>
+            </Drawer>
+          )}
 
           <AnimatePresence>
             {isIsraelSearch ? (
