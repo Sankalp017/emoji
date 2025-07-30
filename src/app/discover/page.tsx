@@ -66,8 +66,8 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Single Sticky Header */}
-      <div className="sticky top-0 w-full bg-background z-40 border-b">
+      {/* Single Sticky Header with Glassmorphism */}
+      <div className="sticky top-0 w-full bg-background/95 backdrop-blur-sm z-40 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           {/* Top Nav */}
           <div className="flex justify-between items-center h-16">
@@ -269,16 +269,16 @@ export default function DiscoverPage() {
                                     <span className="text-base text-left">{use}</span>
                                   </CardContent>
                                 </Card>
-                              ))}
-                            </div>
+                              </Card>
+                            ))}
                           </div>
-
-                          <DrawerFooter className="pt-6 px-0">
-                            <DrawerClose asChild>
-                              <Button variant="outline">Close</Button>
-                            </DrawerClose>
-                          </DrawerFooter>
                         </div>
+
+                        <DrawerFooter className="pt-6 px-0">
+                          <DrawerClose asChild>
+                            <Button variant="outline">Close</Button>
+                          </DrawerClose>
+                        </DrawerFooter>
                       </DrawerContent>
                     )}
                   </Drawer>
