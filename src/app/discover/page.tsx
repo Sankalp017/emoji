@@ -184,7 +184,7 @@ export default function DiscoverPage() {
     <>
       <div className="text-center">
         <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-        <DrawerHeader className="text-left p-0">
+        <DrawerHeader className="p-0">
           <DrawerTitle className="text-3xl font-bold text-center">
             {selectedEmoji.name}
           </DrawerTitle>
@@ -193,18 +193,17 @@ export default function DiscoverPage() {
           </DrawerDescription>
         </DrawerHeader>
       </div>
-      <div className="mt-6">
-        <h3 className="font-semibold mb-3 text-xl text-center">
+
+      <div className="mt-8 w-full">
+        <h3 className="font-semibold mb-4 text-xl text-center">
           Example Usage
         </h3>
         <div className="space-y-3">
           {selectedEmoji.usage.map((use, index) => (
-            <Card key={index} className="bg-muted/50">
-              <CardContent className="p-3 flex items-start gap-3">
-                <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
-                <span className="text-base text-left">{use}</span>
-              </CardContent>
-            </Card>
+            <div key={index} className="border rounded-xl p-4 flex items-center gap-3 text-left w-full">
+              <MessageCircle className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+              <span className="text-base">{use}</span>
+            </div>
           ))}
         </div>
       </div>
@@ -322,11 +321,11 @@ export default function DiscoverPage() {
             }}
           >
             <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
-              <div className="mx-auto w-full max-w-md p-4">
+              <div className="mx-auto w-full max-w-md p-4 flex flex-col items-center">
                 <EmojiDetails />
-                <DrawerFooter className="pt-6 px-0">
+                <DrawerFooter className="pt-6 px-0 w-full">
                   <DrawerClose asChild>
-                    <Button variant="outline">Close</Button>
+                    <Button variant="outline" className="w-full">Close</Button>
                   </DrawerClose>
                 </DrawerFooter>
               </div>
