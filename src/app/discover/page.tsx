@@ -216,7 +216,7 @@ export default function DiscoverPage() {
               </AnimatePresence>
             </motion.div>
             <ScrollArea className="w-full whitespace-nowrap">
-              <div className="flex justify-center gap-2 p-1 bg-muted/50 rounded-full border border-white/10">
+              <div className="mx-auto max-w-fit flex justify-center gap-2 p-1 bg-muted/50 rounded-full border border-white/10">
                 {categories.map((category) => (
                   <button
                     key={category}
@@ -341,43 +341,45 @@ export default function DiscoverPage() {
                       </AnimatePresence>
                     </motion.div>
 
-                    {selectedEmoji && (
-                      <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-lg border-white/10">
-                        <div className="text-center">
-                          <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-                          <DialogHeader>
-                            <DialogTitle className="text-3xl font-bold">
-                              {selectedEmoji.name}
-                            </DialogTitle>
-                            <DialogDescription className="text-lg text-muted-foreground mt-2">
-                              {selectedEmoji.description}
-                            </DialogDescription>
-                          </DialogHeader>
-                        </div>
-
-                        <div className="mt-6">
-                          <h3 className="font-semibold mb-3 text-xl text-center">
-                            Example Usage
-                          </h3>
-                          <div className="space-y-3">
-                            {selectedEmoji.usage.map((use, index) => (
-                              <Card key={index} className="bg-muted/50">
-                                <CardContent className="p-3 flex items-start gap-3">
-                                  <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
-                                  <span className="text-base text-left">{use}</span>
-                                </CardContent>
-                              </Card>
-                            ))}
+                    <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-lg border-white/10">
+                      {selectedEmoji && (
+                        <>
+                          <div className="text-center">
+                            <div className="text-8xl mb-4">{selectedEmoji.char}</div>
+                            <DialogHeader>
+                              <DialogTitle className="text-3xl font-bold">
+                                {selectedEmoji.name}
+                              </DialogTitle>
+                              <DialogDescription className="text-lg text-muted-foreground mt-2">
+                                {selectedEmoji.description}
+                              </DialogDescription>
+                            </DialogHeader>
                           </div>
-                        </div>
 
-                        <DialogFooter className="pt-6">
-                          <DialogClose asChild>
-                            <Button variant="outline">Close</Button>
-                          </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
-                    )}
+                          <div className="mt-6">
+                            <h3 className="font-semibold mb-3 text-xl text-center">
+                              Example Usage
+                            </h3>
+                            <div className="space-y-3">
+                              {selectedEmoji.usage.map((use, index) => (
+                                <Card key={index} className="bg-muted/50">
+                                  <CardContent className="p-3 flex items-start gap-3">
+                                    <MessageCircle className="h-5 w-5 mt-1 text-muted-foreground flex-shrink-0" />
+                                    <span className="text-base text-left">{use}</span>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+
+                          <DialogFooter className="pt-6">
+                            <DialogClose asChild>
+                              <Button variant="outline">Close</Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </>
+                      )}
+                    </DialogContent>
                   </Dialog>
                 ) : (
                   <Drawer
@@ -412,8 +414,8 @@ export default function DiscoverPage() {
                       </AnimatePresence>
                     </motion.div>
 
-                    {selectedEmoji && (
-                      <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
+                    <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
+                      {selectedEmoji && (
                         <div className="mx-auto w-full max-w-md p-4">
                           <div className="text-center">
                             <div className="text-8xl mb-4">{selectedEmoji.char}</div>
@@ -449,8 +451,8 @@ export default function DiscoverPage() {
                             </DrawerClose>
                           </DrawerFooter>
                         </div>
-                      </DrawerContent>
-                    )}
+                      )}
+                    </DrawerContent>
                   </Drawer>
                 )
               )}
