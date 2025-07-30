@@ -26,7 +26,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowLeft, MessageCircle, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -87,13 +87,14 @@ export default function DiscoverPage() {
             <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
               Browse {allEmojis.length} emojis across {EMOJI_CATEGORIES.length} categories.
             </p>
-            <div className="max-w-xl mx-auto mt-6 mb-6">
+            <div className="relative max-w-xl mx-auto mt-6 mb-6">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search by name or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-12 text-center rounded-lg text-base"
+                className="h-12 w-full rounded-full bg-muted/60 pl-12 pr-4 text-base focus-visible:ring-primary/50"
               />
             </div>
             <ScrollArea className="w-full whitespace-nowrap">
