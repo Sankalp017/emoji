@@ -16,16 +16,6 @@ import {
   DrawerFooter,
   DrawerClose,
 } from "@/components/ui/drawer";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetTrigger,
-  SheetFooter,
-  SheetClose,
-} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -48,7 +38,7 @@ const EASTER_EGGS: { keywords: string[]; content: { emoji: string; title: string
     content: {
       emoji: '😭',
       title: 'The Runner-Up',
-      description: 'An incredible athlete, famous for his dedication, physique, and for being the second-best player of his generation. Also holds the record for most pouts on a football pitch.',
+      description: 'A phenomenal goal-poacher, famous for his meticulously crafted brand, his six-pack, and for perfecting the art of the on-field tantrum. Often found pointing to himself after a tap-in. Definitely maybe in the top 10... of his era.',
       link: 'https://en.wikipedia.org/wiki/Messi%E2%80%93Ronaldo_rivalry',
       linkText: 'See the rivalry stats'
     }
@@ -58,7 +48,7 @@ const EASTER_EGGS: { keywords: string[]; content: { emoji: string; title: string
     content: {
       emoji: '🎯',
       title: 'The Penalty King',
-      description: "A nickname given by fans who noticed a particular talent for scoring from the penalty spot. When the pressure is on (and the foul is given), you know who to call.",
+      description: "A popular nickname celebrating his uncanny ability to find the back of the net from 12 yards. Some say his greatest skill is convincing the ref. A true master of the spot-kick.",
       link: 'https://www.goal.com/en/news/what-is-the-meaning-of-the-cristiano-ronaldo-penaldo-nickname/1c81pyk1nifp11u2q1e0a4b9c8',
       linkText: 'Read about the nickname'
     }
@@ -101,7 +91,6 @@ export default function DiscoverPage() {
   const [selectedEmoji, setSelectedEmoji] = useState<Emoji | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [activeEasterEgg, setActiveEasterEgg] = useState<typeof EASTER_EGGS[0]['content'] | null>(null);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const allEmojis = useMemo(() => EMOJI_CATEGORIES.flatMap(c => c.emojis), []);
@@ -175,14 +164,14 @@ export default function DiscoverPage() {
     <>
       <div className="text-center">
         <div className="text-8xl mb-4">{selectedEmoji.char}</div>
-        <SheetHeader className="text-left">
-          <SheetTitle className="text-3xl font-bold text-center">
+        <DrawerHeader className="text-left p-0">
+          <DrawerTitle className="text-3xl font-bold text-center">
             {selectedEmoji.name}
-          </SheetTitle>
-          <SheetDescription className="text-lg text-muted-foreground mt-2 text-center">
+          </DrawerTitle>
+          <DrawerDescription className="text-lg text-muted-foreground mt-2 text-center">
             {selectedEmoji.description}
-          </SheetDescription>
-        </SheetHeader>
+          </DrawerDescription>
+        </DrawerHeader>
       </div>
       <div className="mt-6">
         <h3 className="font-semibold mb-3 text-xl text-center">
@@ -233,12 +222,7 @@ export default function DiscoverPage() {
             >
               Browse {allEmojis.length} emojis across {EMOJI_CATEGORIES.length} categories.
             </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative max-w-xl mx-auto mt-6 mb-6" ref={searchContainerRef}
-            >
+            <div className="relative max-w-xl mx-auto mt-6 mb-6" ref={searchContainerRef}>
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -279,7 +263,7 @@ export default function DiscoverPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
             <ScrollArea className="w-full whitespace-nowrap">
               <div className="mx-auto max-w-fit flex justify-center gap-2 p-1 bg-muted/50 rounded-full border border-white/10">
                 {categories.map((category) => (
@@ -373,42 +357,10 @@ export default function DiscoverPage() {
                   No emojis found for "{searchTerm}". Try a different search!
                 </div>
               ) : (
-                <>
-                  {isDesktop ? (
-                    <Sheet
-                      open={!!selectedEmoji}
-                      onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
-                    >
-                      <SheetContent className="w-[400px] sm:w-[540px] bg-card/80 backdrop-blur-lg border-l-white/10 p-0">
-                        <ScrollArea className="h-full">
-                          <div className="p-6">
-                            <EmojiDetails />
-                          </div>
-                          <SheetFooter className="sticky bottom-0 bg-card/80 backdrop-blur-lg p-6 border-t border-white/10">
-                            <SheetClose asChild>
-                              <Button variant="outline" className="w-full">Close</Button>
-                            </SheetClose>
-                          </SheetFooter>
-                        </ScrollArea>
-                      </SheetContent>
-                    </Sheet>
-                  ) : (
-                    <Drawer
-                      open={!!selectedEmoji}
-                      onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
-                    >
-                      <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
-                        <div className="mx-auto w-full max-w-md p-4">
-                          <EmojiDetails />
-                          <DrawerFooter className="pt-6 px-0">
-                            <DrawerClose asChild>
-                              <Button variant="outline">Close</Button>
-                            </DrawerClose>
-                          </DrawerFooter>
-                        </div>
-                      </DrawerContent>
-                    </Drawer>
-                  )}
+                <Drawer
+                  open={!!selectedEmoji}
+                  onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
+                >
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
                     <AnimatePresence>
                       {filteredEmojis.map((emoji) => (
@@ -420,25 +372,37 @@ export default function DiscoverPage() {
                           exit={{ opacity: 0, y: -15 }}
                           transition={{ duration: 0.25, ease: 'easeInOut' }}
                         >
-                          <motion.div 
-                            onClick={() => setSelectedEmoji(emoji)} 
-                            whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} 
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
-                              <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
-                                <span className="text-4xl">{emoji.char}</span>
-                                <p className="text-xs font-medium text-muted-foreground">
-                                  {emoji.name}
-                                </p>
-                              </CardContent>
-                            </Card>
-                          </motion.div>
+                          <DrawerTrigger asChild>
+                            <motion.div 
+                              onClick={() => setSelectedEmoji(emoji)} 
+                              whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} 
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                                <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
+                                  <span className="text-4xl">{emoji.char}</span>
+                                  <p className="text-xs font-medium text-muted-foreground">
+                                    {emoji.name}
+                                  </p>
+                                </CardContent>
+                              </Card>
+                            </motion.div>
+                          </DrawerTrigger>
                         </motion.div>
                       ))}
                     </AnimatePresence>
                   </div>
-                </>
+                  <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
+                    <div className="mx-auto w-full max-w-md p-4">
+                      <EmojiDetails />
+                      <DrawerFooter className="pt-6 px-0">
+                        <DrawerClose asChild>
+                          <Button variant="outline">Close</Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
               )}
             </>
           )}
