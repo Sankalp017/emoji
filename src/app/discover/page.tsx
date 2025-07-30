@@ -32,43 +32,75 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-const EASTER_EGGS: Record<string, { emoji: string; title: string; description: string; link?: string; linkText?: string }> = {
-  'goat': {
-    emoji: '🐐',
-    title: 'Did you mean Lionel Messi?',
-    description: 'The undisputed Greatest Of All Time. Simply the best.',
-    link: 'https://en.wikipedia.org/wiki/Lionel_Messi',
-    linkText: 'Learn about the GOAT'
+const EASTER_EGGS: { keywords: string[]; content: { emoji: string; title: string; description: string; link?: string; linkText?: string } }[] = [
+  {
+    keywords: ['messi', 'leo messi', 'lionel messi', 'goat'],
+    content: {
+      emoji: '🐐',
+      title: 'The Greatest Of All Time',
+      description: 'Often considered the best player in the world and widely regarded as one of the greatest players of all time.',
+      link: 'https://en.wikipedia.org/wiki/Lionel_Messi',
+      linkText: 'Learn more about the GOAT'
+    }
   },
-  'hakuna matata': {
-    emoji: '🦁🐗',
-    title: 'It means no worries!',
-    description: "For the rest of your days. It's our problem-free philosophy.",
-    link: 'https://www.youtube.com/watch?v=nbY_aP-alkw',
-    linkText: 'Sing along'
+  {
+    keywords: ['cristiano', 'ronaldo', 'cristiano ronaldo'],
+    content: {
+      emoji: '🐪',
+      title: 'A Prolific Goalscorer',
+      description: 'One of the most decorated and marketable athletes in the world, known for his incredible goal-scoring record.',
+      link: 'https://en.wikipedia.org/wiki/Cristiano_Ronaldo',
+      linkText: 'Learn more about CR7'
+    }
   },
-  'to infinity and beyond': {
-    emoji: '🚀',
-    title: 'To Infinity... and Beyond!',
-    description: "The famous catchphrase of Buzz Lightyear from Toy Story.",
-    link: 'https://www.youtube.com/watch?v=2OMixT39vhs',
-    linkText: 'Watch the clip'
+  {
+    keywords: ['penaldo'],
+    content: {
+      emoji: '🐬🐪',
+      title: 'A Controversial Nickname',
+      description: "A term used by critics, often highlighting the number of penalties scored. It's all part of the beautiful game's rivalries.",
+      link: 'https://www.goal.com/en/news/what-is-the-meaning-of-the-cristiano-ronaldo-penaldo-nickname/1c81pyk1nifp11u2q1e0a4b9c8',
+      linkText: 'Read about the nickname'
+    }
   },
-  'show me the money': {
-    emoji: '💰',
-    title: 'SHOW ME THE MONEY!',
-    description: "The iconic line from the movie Jerry Maguire. You have to scream it.",
-    link: 'https://www.youtube.com/watch?v=1-mOKMq19zU',
-    linkText: 'Feel the passion'
+  {
+    keywords: ['hakuna matata'],
+    content: {
+      emoji: '🦁🐗',
+      title: 'It means no worries!',
+      description: "For the rest of your days. It's our problem-free philosophy.",
+      link: 'https://www.youtube.com/watch?v=nbY_aP-alkw',
+      linkText: 'Sing along'
+    }
+  },
+  {
+    keywords: ['to infinity and beyond'],
+    content: {
+      emoji: '🚀',
+      title: 'To Infinity... and Beyond!',
+      description: "The famous catchphrase of Buzz Lightyear from Toy Story.",
+      link: 'https://www.youtube.com/watch?v=2OMixT39vhs',
+      linkText: 'Watch the clip'
+    }
+  },
+  {
+    keywords: ['show me the money'],
+    content: {
+      emoji: '💰',
+      title: 'SHOW ME THE MONEY!',
+      description: "The iconic line from the movie Jerry Maguire. You have to scream it.",
+      link: 'https://www.youtube.com/watch?v=1-mOKMq19zU',
+      linkText: 'Feel the passion'
+    }
   }
-};
+];
 
 export default function DiscoverPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<Emoji[]>([]);
   const [selectedEmoji, setSelectedEmoji] = useState<Emoji | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [activeEasterEgg, setActiveEasterEgg] = useState<typeof EASTER_EGGS[string] | null>(null);
+  const [activeEasterEgg, setActiveEasterEgg] = useState<typeof EASTER_EGGS[0]['content'] | null>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
@@ -93,8 +125,9 @@ export default function DiscoverPage() {
     updateSuggestions(value);
 
     const lowercasedValue = value.toLowerCase().trim();
-    if (EASTER_EGGS[lowercasedValue]) {
-      setActiveEasterEgg(EASTER_EGGS[lowercasedValue]);
+    const foundEgg = EASTER_EGGS.find(egg => egg.keywords.includes(lowercasedValue));
+    if (foundEgg) {
+      setActiveEasterEgg(foundEgg.content);
     } else {
       setActiveEasterEgg(null);
     }
@@ -150,9 +183,9 @@ export default function DiscoverPage() {
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
           >
-            <TriggerComponent asChild onClick={() => setSelectedEmoji(emoji)}>
+            <TriggerComponent asChild>
               <motion.div whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} whileTap={{ scale: 0.95 }}>
-                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                <Card onClick={() => setSelectedEmoji(emoji)} className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
                   <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
                     <span className="text-4xl">{emoji.char}</span>
                     <p className="text-xs font-medium text-muted-foreground">
