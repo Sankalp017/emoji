@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
+import Fuse from "fuse.js";
 import { EMOJI_CATEGORIES, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,7 +34,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function DiscoverPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<Emoji[]>([]);
   const [selectedEmoji, setSelectedEmoji] = useState<Emoji | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -41,15 +42,20 @@ export default function DiscoverPage() {
 
   const allEmojis = useMemo(() => EMOJI_CATEGORIES.flatMap(c => c.emojis), []);
 
+  const fuse = useMemo(() => {
+    const options: Fuse.IFuseOptions<Emoji> = {
+      keys: ['name', 'description', 'usage'],
+      includeScore: true,
+      threshold: 0.4,
+      minMatchCharLength: 2,
+    };
+    return new Fuse(allEmojis, options);
+  }, [allEmojis]);
+
   const updateSuggestions = (value: string) => {
-    if (value.length > 0) {
-      const newSuggestions = allEmojis
-        .filter((emoji) =>
-          emoji.name.toLowerCase().startsWith(value.toLowerCase())
-        )
-        .map((emoji) => emoji.name)
-        .slice(0, 7); // Limit suggestions
-      setSuggestions(newSuggestions);
+    if (value.length > 1) {
+      const results = fuse.search(value).slice(0, 7);
+      setSuggestions(results.map(result => result.item));
     } else {
       setSuggestions([]);
     }
@@ -61,8 +67,8 @@ export default function DiscoverPage() {
     updateSuggestions(value);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion);
+  const handleSuggestionClick = (emoji: Emoji) => {
+    setSearchTerm(emoji.name);
     setSuggestions([]);
   };
 
@@ -79,35 +85,31 @@ export default function DiscoverPage() {
   }, []);
 
   const filteredEmojis = useMemo(() => {
-    let emojisToFilter: Emoji[];
-
-    if (selectedCategory === "All") {
-      emojisToFilter = allEmojis;
-    } else {
-      emojisToFilter =
-        EMOJI_CATEGORIES.find((c) => c.name === selectedCategory)?.emojis || [];
-    }
+    const baseEmojis = selectedCategory === "All"
+      ? allEmojis
+      : EMOJI_CATEGORIES.find(c => c.name === selectedCategory)?.emojis || [];
 
     if (!searchTerm) {
-      return emojisToFilter;
+      return baseEmojis;
     }
 
-    return emojisToFilter.filter(
-      (emoji) =>
-        emoji.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emoji.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm, selectedCategory, allEmojis]);
+    const results = fuse.search(searchTerm).map(result => result.item);
+    
+    if (selectedCategory === "All") {
+      return results;
+    }
+
+    const categoryChars = new Set(baseEmojis.map(e => e.char));
+    return results.filter(emoji => categoryChars.has(emoji.char));
+  }, [searchTerm, selectedCategory, allEmojis, fuse]);
 
   const categories = ["All", ...EMOJI_CATEGORIES.map((c) => c.name)];
   const isIsraelSearch = searchTerm.toLowerCase().trim() === "israel";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Single Sticky Header with Glassmorphism */}
       <div className="sticky top-0 w-full bg-background/95 backdrop-blur-sm z-40 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          {/* Top Nav */}
           <div className="flex justify-between items-center h-16">
             <Button asChild variant="outline" className="rounded-lg">
               <Link href="/">
@@ -118,7 +120,6 @@ export default function DiscoverPage() {
             <ThemeToggle />
           </div>
 
-          {/* Title, Search, and Categories */}
           <div className="pt-2 pb-6 text-center">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tighter">
               Emoji Explorer
@@ -134,20 +135,23 @@ export default function DiscoverPage() {
                 value={searchTerm}
                 onChange={handleSearchChange}
                 onFocus={() => updateSuggestions(searchTerm)}
-                className="h-12 w-full rounded-full bg-muted/60 pl-12 pr-4 text-base focus-visible:ring-primary/50"
+                className={`h-12 w-full bg-muted/60 pl-12 pr-4 text-base focus-visible:ring-primary/50 transition-all ${
+                  suggestions.length > 0 ? 'rounded-full rounded-b-none' : 'rounded-full'
+                }`}
               />
               {suggestions.length > 0 && (
-                <Card className="absolute top-full mt-2 w-full bg-card text-card-foreground shadow-lg border rounded-2xl z-50">
+                <Card className="absolute top-full w-full bg-card text-card-foreground shadow-lg border rounded-t-none rounded-b-2xl z-50 border-t-0">
                   <CardContent className="p-2">
                     <ul className="flex flex-col">
                       {suggestions.map((suggestion, index) => (
                         <li key={index}>
                           <Button
                             variant="ghost"
-                            className="w-full justify-start h-10 px-4 text-base"
+                            className="w-full justify-start h-12 px-4 text-base"
                             onClick={() => handleSuggestionClick(suggestion)}
                           >
-                            {suggestion}
+                            <span className="text-2xl mr-4 w-8 text-center">{suggestion.char}</span>
+                            <span>{suggestion.name}</span>
                           </Button>
                         </li>
                       ))}
@@ -175,7 +179,6 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      {/* Main content area */}
       <main className="px-4 sm:px-6 md:px-8 py-8">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
