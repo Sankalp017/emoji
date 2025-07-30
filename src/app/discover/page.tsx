@@ -4,10 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { EMOJI_CATEGORIES, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Drawer,
   DrawerContent,
@@ -52,7 +49,9 @@ export default function DiscoverPage() {
         EMOJI_CATEGORIES.find((c) => c.name === selectedCategory)?.emojis || [];
     }
 
-    if (!searchTerm) return emojisToFilter;
+    if (!searchTerm) {
+      return emojisToFilter;
+    }
 
     return emojisToFilter.filter(
       (emoji) =>
@@ -269,16 +268,16 @@ export default function DiscoverPage() {
                                     <span className="text-base text-left">{use}</span>
                                   </CardContent>
                                 </Card>
-                              </Card>
-                            ))}
+                              ))}
+                            </div>
                           </div>
-                        </div>
 
-                        <DrawerFooter className="pt-6 px-0">
-                          <DrawerClose asChild>
-                            <Button variant="outline">Close</Button>
-                          </DrawerClose>
-                        </DrawerFooter>
+                          <DrawerFooter className="pt-6 px-0">
+                            <DrawerClose asChild>
+                              <Button variant="outline">Close</Button>
+                            </DrawerClose>
+                          </DrawerFooter>
+                        </div>
                       </DrawerContent>
                     )}
                   </Drawer>
