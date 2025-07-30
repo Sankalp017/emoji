@@ -21,6 +21,27 @@ import { ArrowLeft, MessageCircle, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
+const HighlightedText = ({ text, highlight }: { text: string; highlight: string }) => {
+  if (!highlight.trim()) {
+    return <>{text}</>;
+  }
+  const regex = new RegExp(`(${highlight.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+  const parts = text.split(regex);
+  return (
+    <>
+      {parts.map((part, i) =>
+        regex.test(part) ? (
+          <mark key={i} className="bg-primary/20 text-primary font-bold rounded-sm px-0.5">
+            {part}
+          </mark>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+};
+
 const EASTER_EGGS: { keywords: string[]; content: { emoji: string; title: string; description: string; link?: string; linkText?: string } }[] = [
   {
     keywords: ['messi', 'leo messi', 'lionel messi', 'goat'],
@@ -312,7 +333,7 @@ export default function DiscoverPage() {
             </DrawerContent>
           </Drawer>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {isIsraelSearch ? (
               <motion.div
                 key="israel-search"
@@ -409,7 +430,7 @@ export default function DiscoverPage() {
                               <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
                                 <span className="text-4xl">{emoji.char}</span>
                                 <p className="text-xs font-medium text-muted-foreground">
-                                  {emoji.name}
+                                  <HighlightedText text={emoji.name} highlight={searchTerm} />
                                 </p>
                               </CardContent>
                             </Card>
