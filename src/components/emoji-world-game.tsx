@@ -291,10 +291,10 @@ export function EmojiWorldGame() {
               Explore, play, and learn the story behind our favorite icons.
             </p>
             <div className="grid md:grid-cols-3 gap-6 mt-8 w-full max-w-5xl">
-              <motion.div whileHover={{ y: -8, scale: 1.03 }} className="h-full">
+              <motion.div whileHover={{ y: -8, scale: 1.03, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} className="h-full">
                 <Card 
                   onClick={startGame} 
-                  className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10"
+                  className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10"
                 >
                   <motion.span 
                     className="text-6xl mb-4"
@@ -307,9 +307,9 @@ export function EmojiWorldGame() {
                   <CardDescription className="mt-2">Test your knowledge in a race against time.</CardDescription>
                 </Card>
               </motion.div>
-              <motion.div whileHover={{ y: -8, scale: 1.03 }} className="h-full">
+              <motion.div whileHover={{ y: -8, scale: 1.03, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} className="h-full">
                 <Link href="/discover" className="h-full block">
-                  <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10">
+                  <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10">
                     <motion.span 
                       className="text-6xl mb-4"
                       animate={{ scale: [1, 1.1, 1] }}
@@ -322,9 +322,9 @@ export function EmojiWorldGame() {
                   </Card>
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ y: -8, scale: 1.03 }} className="h-full">
+              <motion.div whileHover={{ y: -8, scale: 1.03, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} className="h-full">
                 <Link href="/history" className="h-full block">
-                  <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10">
+                  <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10">
                     <motion.span 
                       className="text-6xl mb-4"
                       animate={{ y: [-3, 3, -3] }}

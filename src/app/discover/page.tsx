@@ -32,11 +32,43 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
+const EASTER_EGGS: Record<string, { emoji: string; title: string; description: string; link?: string; linkText?: string }> = {
+  'goat': {
+    emoji: '🐐',
+    title: 'Did you mean Lionel Messi?',
+    description: 'The undisputed Greatest Of All Time. Simply the best.',
+    link: 'https://en.wikipedia.org/wiki/Lionel_Messi',
+    linkText: 'Learn about the GOAT'
+  },
+  'hakuna matata': {
+    emoji: '🦁🐗',
+    title: 'It means no worries!',
+    description: "For the rest of your days. It's our problem-free philosophy.",
+    link: 'https://www.youtube.com/watch?v=nbY_aP-alkw',
+    linkText: 'Sing along'
+  },
+  'to infinity and beyond': {
+    emoji: '🚀',
+    title: 'To Infinity... and Beyond!',
+    description: "The famous catchphrase of Buzz Lightyear from Toy Story.",
+    link: 'https://www.youtube.com/watch?v=2OMixT39vhs',
+    linkText: 'Watch the clip'
+  },
+  'show me the money': {
+    emoji: '💰',
+    title: 'SHOW ME THE MONEY!',
+    description: "The iconic line from the movie Jerry Maguire. You have to scream it.",
+    link: 'https://www.youtube.com/watch?v=1-mOKMq19zU',
+    linkText: 'Feel the passion'
+  }
+};
+
 export default function DiscoverPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<Emoji[]>([]);
   const [selectedEmoji, setSelectedEmoji] = useState<Emoji | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [activeEasterEgg, setActiveEasterEgg] = useState<typeof EASTER_EGGS[string] | null>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
@@ -59,6 +91,13 @@ export default function DiscoverPage() {
     const value = e.target.value;
     setSearchTerm(value);
     updateSuggestions(value);
+
+    const lowercasedValue = value.toLowerCase().trim();
+    if (EASTER_EGGS[lowercasedValue]) {
+      setActiveEasterEgg(EASTER_EGGS[lowercasedValue]);
+    } else {
+      setActiveEasterEgg(null);
+    }
   };
 
   const handleSuggestionClick = (emoji: Emoji) => {
@@ -235,6 +274,33 @@ export default function DiscoverPage() {
                 </CardContent>
               </Card>
             </div>
+          ) : activeEasterEgg ? (
+            <div className="mt-8 flex justify-center p-4">
+              <Card className="w-full max-w-xl bg-card/80 backdrop-blur-lg text-card-foreground shadow-xl border border-white/10 rounded-2xl">
+                <CardContent className="p-8 text-center">
+                  <div className="flex flex-col items-center gap-4 mb-6">
+                    <span className="text-8xl">{activeEasterEgg.emoji}</span>
+                    <h2 className="text-4xl font-bold tracking-tight text-primary">
+                      {activeEasterEgg.title}
+                    </h2>
+                  </div>
+                  <p className="text-lg text-muted-foreground leading-relaxed max-w-prose mx-auto">
+                    {activeEasterEgg.description}
+                  </p>
+                  {activeEasterEgg.link && (
+                    <Button asChild size="lg" className="mt-8">
+                      <Link
+                        href={activeEasterEgg.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {activeEasterEgg.linkText}
+                      </Link>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           ) : (
             <>
               {filteredEmojis.length === 0 && searchTerm !== "" ? (
@@ -259,8 +325,8 @@ export default function DiscoverPage() {
                             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                           >
                             <DialogTrigger asChild onClick={() => setSelectedEmoji(emoji)}>
-                              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                              <motion.div whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} whileTap={{ scale: 0.95 }}>
+                                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
                                   <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
                                     <span className="text-4xl">{emoji.char}</span>
                                     <p className="text-xs font-medium text-muted-foreground">
@@ -330,8 +396,8 @@ export default function DiscoverPage() {
                             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                           >
                             <DrawerTrigger asChild onClick={() => setSelectedEmoji(emoji)}>
-                              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                              <motion.div whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} whileTap={{ scale: 0.95 }}>
+                                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
                                   <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
                                     <span className="text-4xl">{emoji.char}</span>
                                     <p className="text-xs font-medium text-muted-foreground">
