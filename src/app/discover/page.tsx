@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { EMOJI_CATEGORIES, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -99,7 +100,7 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="sticky top-0 w-full bg-background/95 backdrop-blur-sm z-40 border-b">
+      <div className="sticky top-0 w-full bg-background/80 backdrop-blur-lg z-40 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex justify-between items-center h-16">
             <Button asChild variant="outline" className="rounded-lg">
@@ -112,56 +113,88 @@ export default function DiscoverPage() {
           </div>
 
           <div className="pt-2 pb-6 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter">
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-4xl md:text-5xl font-bold tracking-tighter"
+            >
               Emoji Explorer
-            </h1>
-            <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-muted-foreground mt-3 max-w-2xl mx-auto"
+            >
               Browse {allEmojis.length} emojis across {EMOJI_CATEGORIES.length} categories.
-            </p>
-            <div className="relative max-w-xl mx-auto mt-6 mb-6" ref={searchContainerRef}>
-              <div className="bg-card border shadow-lg rounded-2xl transition-all">
-                <div className="flex items-center pl-4">
-                  <Search className="h-5 w-5 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="Search by name or description..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    onFocus={() => updateSuggestions(searchTerm)}
-                    className="h-12 w-full bg-transparent border-none pl-2 text-base focus-visible:ring-0"
-                  />
-                </div>
-                {suggestions.length > 0 && (
-                  <div className="border-t">
-                    <ul className="p-2">
-                      {suggestions.map((suggestion, index) => (
-                        <li key={index}>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start h-12 px-4 text-base rounded-lg"
-                            onClick={() => handleSuggestionClick(suggestion)}
-                          >
-                            <span className="text-2xl mr-4 w-8 text-center">{suggestion.char}</span>
-                            <span>{suggestion.name}</span>
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+            </motion.p>
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative max-w-xl mx-auto mt-6 mb-6" ref={searchContainerRef}
+            >
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search by name or description..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onFocus={() => updateSuggestions(searchTerm)}
+                  className="h-12 w-full bg-muted/50 border-white/10 pl-12 pr-4 text-base rounded-full focus-visible:ring-2 focus-visible:ring-primary/50"
+                />
               </div>
-            </div>
-            <ScrollArea className="w-full whitespace-nowrap">
-              <div className="flex justify-center gap-2 pb-2">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    onClick={() => setSelectedCategory(category)}
-                    className="shrink-0 rounded-lg"
+              <AnimatePresence>
+                {suggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {category}
-                  </Button>
+                    <Card className="absolute top-full mt-2 w-full bg-card/80 backdrop-blur-lg text-card-foreground shadow-xl border border-white/10 rounded-2xl z-50">
+                      <CardContent className="p-2">
+                        <ul className="flex flex-col">
+                          {suggestions.map((suggestion) => (
+                            <li key={suggestion.char}>
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start h-12 px-4 text-base rounded-lg"
+                                onClick={() => handleSuggestionClick(suggestion)}
+                              >
+                                <span className="text-2xl mr-4 w-8 text-center">{suggestion.char}</span>
+                                <span>{suggestion.name}</span>
+                              </Button>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+            <ScrollArea className="w-full whitespace-nowrap">
+              <div className="flex justify-center gap-2 p-1 bg-muted/50 rounded-full border border-white/10">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`relative shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                      selectedCategory === category ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {selectedCategory === category && (
+                      <motion.div
+                        layoutId="active-category-pill"
+                        className="absolute inset-0 bg-primary rounded-full"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">{category}</span>
+                  </button>
                 ))}
               </div>
               <ScrollBar orientation="horizontal" />
@@ -174,7 +207,7 @@ export default function DiscoverPage() {
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center p-4">
-              <Card className="w-full max-w-xl bg-card text-card-foreground shadow-lg border rounded-2xl">
+              <Card className="w-full max-w-xl bg-card/80 backdrop-blur-lg text-card-foreground shadow-xl border border-white/10 rounded-2xl">
                 <CardContent className="p-8 text-center">
                   <div className="flex flex-col items-center gap-4 mb-6">
                     <span className="text-8xl">🇵🇸</span>
@@ -214,27 +247,36 @@ export default function DiscoverPage() {
                     open={!!selectedEmoji}
                     onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
                   >
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-                      {filteredEmojis.map((emoji) => (
-                        <DialogTrigger
-                          asChild
-                          key={emoji.char}
-                          onClick={() => setSelectedEmoji(emoji)}
-                        >
-                          <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
-                            <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
-                              <span className="text-4xl">{emoji.char}</span>
-                              <p className="text-xs font-medium text-muted-foreground">
-                                {emoji.name}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        </DialogTrigger>
-                      ))}
-                    </div>
+                    <motion.div layout className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                      <AnimatePresence>
+                        {filteredEmojis.map((emoji) => (
+                          <motion.div
+                            layout
+                            key={emoji.char}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                          >
+                            <DialogTrigger asChild onClick={() => setSelectedEmoji(emoji)}>
+                              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                                  <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
+                                    <span className="text-4xl">{emoji.char}</span>
+                                    <p className="text-xs font-medium text-muted-foreground">
+                                      {emoji.name}
+                                    </p>
+                                  </CardContent>
+                                </Card>
+                              </motion.div>
+                            </DialogTrigger>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
 
                     {selectedEmoji && (
-                      <DialogContent className="sm:max-w-[425px]">
+                      <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-lg border-white/10">
                         <div className="text-center">
                           <div className="text-8xl mb-4">{selectedEmoji.char}</div>
                           <DialogHeader>
@@ -276,27 +318,36 @@ export default function DiscoverPage() {
                     open={!!selectedEmoji}
                     onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
                   >
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-                      {filteredEmojis.map((emoji) => (
-                        <DrawerTrigger
-                          asChild
-                          key={emoji.char}
-                          onClick={() => setSelectedEmoji(emoji)}
-                        >
-                          <Card className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
-                            <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
-                              <span className="text-4xl">{emoji.char}</span>
-                              <p className="text-xs font-medium text-muted-foreground">
-                                {emoji.name}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        </DrawerTrigger>
-                      ))}
-                    </div>
+                    <motion.div layout className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                       <AnimatePresence>
+                        {filteredEmojis.map((emoji) => (
+                          <motion.div
+                            layout
+                            key={emoji.char}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                          >
+                            <DrawerTrigger asChild onClick={() => setSelectedEmoji(emoji)}>
+                              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg hover:border-primary transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                                  <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
+                                    <span className="text-4xl">{emoji.char}</span>
+                                    <p className="text-xs font-medium text-muted-foreground">
+                                      {emoji.name}
+                                    </p>
+                                  </CardContent>
+                                </Card>
+                              </motion.div>
+                            </DrawerTrigger>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
 
                     {selectedEmoji && (
-                      <DrawerContent>
+                      <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
                         <div className="mx-auto w-full max-w-md p-4">
                           <div className="text-center">
                             <div className="text-8xl mb-4">{selectedEmoji.char}</div>

@@ -127,7 +127,7 @@ export default function HistoryPage() {
   return (
     <TooltipProvider>
       <div className="bg-background text-foreground">
-        <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-background/80 backdrop-blur-sm">
+        <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-background/80 backdrop-blur-lg border-b border-white/10">
           <Button asChild variant="outline">
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -160,7 +160,7 @@ export default function HistoryPage() {
             <p className="text-xl text-muted-foreground max-w-3xl">
               Before keyboards, we used pictures to tell stories. From cave paintings to Egyptian hieroglyphs, <Highlight>visual language is in our DNA.</Highlight>
             </p>
-            <Card className="max-w-md">
+            <Card className="max-w-md bg-card/50 backdrop-blur-sm border-white/10">
               <CardHeader>
                 <CardTitle>Early Visuals</CardTitle>
               </CardHeader>
@@ -190,13 +190,13 @@ export default function HistoryPage() {
             <p className="text-xl text-muted-foreground max-w-3xl">
               In 1982, computer scientist <Highlight>Scott Fahlman</Highlight> proposed using text characters to create "smileys," adding a human touch to the first digital bulletin boards.
             </p>
-            <Card className="w-full max-w-md">
+            <Card className="w-full max-w-md bg-card/50 backdrop-blur-sm border-white/10">
               <CardHeader>
                 <CardTitle>The First Emoticons</CardTitle>
                 <CardDescription>Proposed in 1982</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="font-mono text-4xl md:text-5xl whitespace-pre-wrap text-center p-4 bg-muted rounded-lg">
+                <p className="font-mono text-4xl md:text-5xl whitespace-pre-wrap text-center p-4 bg-muted/50 rounded-lg">
                   {`:-)`}   {`:-(`}
                 </p>
               </CardContent>
@@ -212,13 +212,13 @@ export default function HistoryPage() {
             <p className="text-xl text-muted-foreground max-w-3xl">
               The first true emoji set was created in 1999 by <Highlight>Shigetaka Kurita</Highlight> in Japan for pagers. It included 176 simple, 12x12 pixel icons.
             </p>
-            <Card className="w-full max-w-sm">
+            <Card className="w-full max-w-sm bg-card/50 backdrop-blur-sm border-white/10">
               <CardHeader>
                 <CardTitle>Original NTT DoCoMo Set</CardTitle>
                 <CardDescription>A few of the first 176</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-6 gap-4 p-4 bg-muted rounded-lg border">
+                <div className="grid grid-cols-6 gap-4 p-4 bg-muted/50 rounded-lg border">
                   {'❤✨✌☕✈☀☁☂☎✉🎵⛽'.split("").map((emoji, i) => (
                     <motion.div key={i} whileHover={{ scale: 1.5 }} className="text-2xl text-center">{emoji}</motion.div>
                   ))}
@@ -236,7 +236,7 @@ export default function HistoryPage() {
             <p className="text-xl text-muted-foreground max-w-3xl">
               The <Highlight>Unicode Consortium's</Highlight> standardization in 2010 and <Highlight>Apple's</Highlight> iOS keyboard in 2011 launched emojis into a worldwide phenomenon. By 2015, they were so popular that one became Oxford Dictionary's Word of the Year.
             </p>
-            <Card className="w-full max-w-sm text-center shadow-lg">
+            <Card className="w-full max-w-sm text-center shadow-lg bg-card/50 backdrop-blur-sm border-white/10">
               <CardHeader>
                 <CardTitle className="text-2xl">Word of the Year 2015</CardTitle>
               </CardHeader>
@@ -262,12 +262,12 @@ export default function HistoryPage() {
             <p className="text-xl text-muted-foreground max-w-3xl">
               Emojis evolved to reflect our diverse world. The introduction of <Highlight>skin tones, gender options,</Highlight> and <Highlight>cultural symbols</Highlight> made our digital language more inclusive.
             </p>
-            <Card className="w-full max-w-md">
+            <Card className="w-full max-w-md bg-card/50 backdrop-blur-sm border-white/10">
               <CardHeader>
                 <CardTitle>Representation Matters</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="text-7xl p-4 bg-muted rounded-lg text-center h-[100px] flex items-center justify-center">
+                <div className="text-7xl p-4 bg-muted/50 rounded-lg text-center h-[100px] flex items-center justify-center">
                   <span style={{ display: skinTone === 0 ? 'inline' : 'none' }}>👋</span>
                   <span style={{ display: skinTone === 1 ? 'inline' : 'none' }}>👋🏻</span>
                   <span style={{ display: skinTone === 2 ? 'inline' : 'none' }}>👋🏼</span>
@@ -296,15 +296,15 @@ export default function HistoryPage() {
               Today, emojis have become a true global language, crossing cultural and age boundaries to connect us all.
             </p>
             <div className="flex flex-col md:flex-row gap-4 w-full max-w-3xl">
-              <Card className="p-4 text-center flex-1">
+              <Card className="p-4 text-center flex-1 bg-card/50 backdrop-blur-sm border-white/10">
                 <p className="text-4xl font-bold text-primary">3,800+</p>
                 <p className="text-muted-foreground">Official Emojis</p>
               </Card>
-              <Card className="p-4 text-center flex-1">
+              <Card className="p-4 text-center flex-1 bg-card/50 backdrop-blur-sm border-white/10">
                 <p className="text-4xl font-bold text-primary">90%</p>
                 <p className="text-muted-foreground">Of Internet Users Use Them</p>
               </Card>
-              <Card className="p-4 text-center flex-1">
+              <Card className="p-4 text-center flex-1 bg-card/50 backdrop-blur-sm border-white/10">
                 <p className="text-4xl font-bold text-primary">10B</p>
                 <p className="text-muted-foreground">Sent Daily</p>
               </Card>
