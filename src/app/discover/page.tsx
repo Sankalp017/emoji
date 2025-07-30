@@ -319,10 +319,10 @@ export default function DiscoverPage() {
                           <motion.div
                             layout
                             key={emoji.char}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
+                            transition={{ duration: 0.25, ease: 'easeInOut' }}
                           >
                             <DialogTrigger asChild onClick={() => setSelectedEmoji(emoji)}>
                               <motion.div whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} whileTap={{ scale: 0.95 }}>
@@ -390,10 +390,10 @@ export default function DiscoverPage() {
                           <motion.div
                             layout
                             key={emoji.char}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
+                            transition={{ duration: 0.25, ease: 'easeInOut' }}
                           >
                             <DrawerTrigger asChild onClick={() => setSelectedEmoji(emoji)}>
                               <motion.div whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} whileTap={{ scale: 0.95 }}>
