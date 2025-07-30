@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useMediaQuery } from "@/hooks/use-media-query";
 
 const EASTER_EGGS: { keywords: string[]; content: { emoji: string; title: string; description: string; link?: string; linkText?: string } }[] = [
   {
@@ -357,10 +356,26 @@ export default function DiscoverPage() {
                   No emojis found for "{searchTerm}". Try a different search!
                 </div>
               ) : (
-                <Drawer
-                  open={!!selectedEmoji}
-                  onOpenChange={(isOpen) => !isOpen && setSelectedEmoji(null)}
-                >
+                <>
+                  <Drawer
+                    open={!!selectedEmoji}
+                    onOpenChange={(isOpen) => {
+                      if (!isOpen) {
+                        setSelectedEmoji(null);
+                      }
+                    }}
+                  >
+                    <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
+                      <div className="mx-auto w-full max-w-md p-4">
+                        <EmojiDetails />
+                        <DrawerFooter className="pt-6 px-0">
+                          <DrawerClose asChild>
+                            <Button variant="outline">Close</Button>
+                          </DrawerClose>
+                        </DrawerFooter>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
                     <AnimatePresence>
                       {filteredEmojis.map((emoji) => (
@@ -372,37 +387,26 @@ export default function DiscoverPage() {
                           exit={{ opacity: 0, y: -15 }}
                           transition={{ duration: 0.25, ease: 'easeInOut' }}
                         >
-                          <DrawerTrigger asChild>
-                            <motion.div 
-                              onClick={() => setSelectedEmoji(emoji)} 
-                              whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} 
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
-                                <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
-                                  <span className="text-4xl">{emoji.char}</span>
-                                  <p className="text-xs font-medium text-muted-foreground">
-                                    {emoji.name}
-                                  </p>
-                                </CardContent>
-                              </Card>
-                            </motion.div>
-                          </DrawerTrigger>
+                          <motion.div 
+                            onClick={() => setSelectedEmoji(emoji)} 
+                            whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} 
+                            whileTap={{ scale: 0.95 }}
+                            className="cursor-pointer"
+                          >
+                            <Card className="bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+                              <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
+                                <span className="text-4xl">{emoji.char}</span>
+                                <p className="text-xs font-medium text-muted-foreground">
+                                  {emoji.name}
+                                </p>
+                              </CardContent>
+                            </Card>
+                          </motion.div>
                         </motion.div>
                       ))}
                     </AnimatePresence>
                   </div>
-                  <DrawerContent className="bg-card/80 backdrop-blur-lg border-t border-white/10">
-                    <div className="mx-auto w-full max-w-md p-4">
-                      <EmojiDetails />
-                      <DrawerFooter className="pt-6 px-0">
-                        <DrawerClose asChild>
-                          <Button variant="outline">Close</Button>
-                        </DrawerClose>
-                      </DrawerFooter>
-                    </div>
-                  </DrawerContent>
-                </Drawer>
+                </>
               )}
             </>
           )}
