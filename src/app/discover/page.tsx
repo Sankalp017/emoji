@@ -46,19 +46,19 @@ const EASTER_EGGS: { keywords: string[]; content: { emoji: string; title: string
   {
     keywords: ['cristiano', 'ronaldo', 'cristiano ronaldo'],
     content: {
-      emoji: '🐪',
-      title: 'A Prolific Goalscorer',
-      description: 'One of the most decorated and marketable athletes in the world, known for his incredible goal-scoring record.',
-      link: 'https://en.wikipedia.org/wiki/Cristiano_Ronaldo',
-      linkText: 'Learn more about CR7'
+      emoji: '😭',
+      title: 'The Runner-Up',
+      description: 'An incredible athlete, famous for his dedication, physique, and for being the second-best player of his generation. Also holds the record for most pouts on a football pitch.',
+      link: 'https://en.wikipedia.org/wiki/Messi%E2%80%93Ronaldo_rivalry',
+      linkText: 'See the rivalry stats'
     }
   },
   {
     keywords: ['penaldo'],
     content: {
-      emoji: '🐬🐪',
-      title: 'A Controversial Nickname',
-      description: "A term used by critics, often highlighting the number of penalties scored. It's all part of the beautiful game's rivalries.",
+      emoji: '🎯',
+      title: 'The Penalty King',
+      description: "A nickname given by fans who noticed a particular talent for scoring from the penalty spot. When the pressure is on (and the foul is given), you know who to call.",
       link: 'https://www.goal.com/en/news/what-is-the-meaning-of-the-cristiano-ronaldo-penaldo-nickname/1c81pyk1nifp11u2q1e0a4b9c8',
       linkText: 'Read about the nickname'
     }
@@ -184,8 +184,12 @@ export default function DiscoverPage() {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
           >
             <TriggerComponent asChild>
-              <motion.div whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} whileTap={{ scale: 0.95 }}>
-                <Card onClick={() => setSelectedEmoji(emoji)} className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
+              <motion.div 
+                onClick={() => setSelectedEmoji(emoji)} 
+                whileHover={{ y: -5, scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.1)' }} 
+                whileTap={{ scale: 0.95 }}
+              >
+                <Card className="cursor-pointer bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-200 flex flex-col items-center justify-center aspect-square">
                   <CardContent className="p-2 flex flex-col items-center justify-center text-center gap-2">
                     <span className="text-4xl">{emoji.char}</span>
                     <p className="text-xs font-medium text-muted-foreground">
