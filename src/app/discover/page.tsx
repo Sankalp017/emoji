@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
-import Fuse from "fuse.js";
 import { EMOJI_CATEGORIES, Emoji } from "@/lib/emojis";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,20 +41,14 @@ export default function DiscoverPage() {
 
   const allEmojis = useMemo(() => EMOJI_CATEGORIES.flatMap(c => c.emojis), []);
 
-  const fuse = useMemo(() => {
-    const options: Fuse.IFuseOptions<Emoji> = {
-      keys: ['name', 'description', 'usage'],
-      includeScore: true,
-      threshold: 0.4,
-      minMatchCharLength: 2,
-    };
-    return new Fuse(allEmojis, options);
-  }, [allEmojis]);
-
   const updateSuggestions = (value: string) => {
     if (value.length > 1) {
-      const results = fuse.search(value).slice(0, 7);
-      setSuggestions(results.map(result => result.item));
+      const newSuggestions = allEmojis
+        .filter(emoji =>
+          emoji.name.toLowerCase().includes(value.toLowerCase())
+        )
+        .slice(0, 7);
+      setSuggestions(newSuggestions);
     } else {
       setSuggestions([]);
     }
@@ -93,15 +86,13 @@ export default function DiscoverPage() {
       return baseEmojis;
     }
 
-    const results = fuse.search(searchTerm).map(result => result.item);
-    
-    if (selectedCategory === "All") {
-      return results;
-    }
-
-    const categoryChars = new Set(baseEmojis.map(e => e.char));
-    return results.filter(emoji => categoryChars.has(emoji.char));
-  }, [searchTerm, selectedCategory, allEmojis, fuse]);
+    const lowercasedTerm = searchTerm.toLowerCase();
+    return baseEmojis.filter(emoji =>
+      emoji.name.toLowerCase().includes(lowercasedTerm) ||
+      emoji.description.toLowerCase().includes(lowercasedTerm) ||
+      emoji.usage.some(use => use.toLowerCase().includes(lowercasedTerm))
+    );
+  }, [searchTerm, selectedCategory, allEmojis]);
 
   const categories = ["All", ...EMOJI_CATEGORIES.map((c) => c.name)];
   const isIsraelSearch = searchTerm.toLowerCase().trim() === "israel";
@@ -128,26 +119,26 @@ export default function DiscoverPage() {
               Browse {allEmojis.length} emojis across {EMOJI_CATEGORIES.length} categories.
             </p>
             <div className="relative max-w-xl mx-auto mt-6 mb-6" ref={searchContainerRef}>
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
-              <Input
-                type="text"
-                placeholder="Search by name or description..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={() => updateSuggestions(searchTerm)}
-                className={`h-12 w-full bg-muted/60 pl-12 pr-4 text-base focus-visible:ring-primary/50 transition-all ${
-                  suggestions.length > 0 ? 'rounded-full rounded-b-none' : 'rounded-full'
-                }`}
-              />
-              {suggestions.length > 0 && (
-                <Card className="absolute top-full w-full bg-card text-card-foreground shadow-lg border rounded-t-none rounded-b-2xl z-50 border-t-0">
-                  <CardContent className="p-2">
-                    <ul className="flex flex-col">
+              <div className="bg-card border shadow-lg rounded-2xl transition-all">
+                <div className="flex items-center pl-4">
+                  <Search className="h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Search by name or description..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    onFocus={() => updateSuggestions(searchTerm)}
+                    className="h-12 w-full bg-transparent border-none pl-2 text-base focus-visible:ring-0"
+                  />
+                </div>
+                {suggestions.length > 0 && (
+                  <div className="border-t">
+                    <ul className="p-2">
                       {suggestions.map((suggestion, index) => (
                         <li key={index}>
                           <Button
                             variant="ghost"
-                            className="w-full justify-start h-12 px-4 text-base"
+                            className="w-full justify-start h-12 px-4 text-base rounded-lg"
                             onClick={() => handleSuggestionClick(suggestion)}
                           >
                             <span className="text-2xl mr-4 w-8 text-center">{suggestion.char}</span>
@@ -156,9 +147,9 @@ export default function DiscoverPage() {
                         </li>
                       ))}
                     </ul>
-                  </CardContent>
-                </Card>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
             <ScrollArea className="w-full whitespace-nowrap">
               <div className="flex justify-center gap-2 pb-2">
