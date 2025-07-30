@@ -7,8 +7,6 @@ import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Drawer,
@@ -68,57 +66,58 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-background/80 backdrop-blur-sm h-16">
-        <Button asChild variant="outline">
-          <Link href="/">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Link>
-        </Button>
-        <ThemeToggle />
-      </header>
-
-      {/* Sticky container for title, search, and categories */}
-      <div className="sticky top-[64px] w-full bg-background/95 backdrop-blur-sm z-40 pt-4 pb-2 border-b border-border">
+      {/* Single Sticky Header */}
+      <div className="sticky top-0 w-full bg-background z-40 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          <div className="text-center mb-2">
-            <h1 className="text-4xl font-bold tracking-tighter">
+          {/* Top Nav */}
+          <div className="flex justify-between items-center h-16">
+            <Button asChild variant="outline" className="rounded-lg">
+              <Link href="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+              </Link>
+            </Button>
+            <ThemeToggle />
+          </div>
+
+          {/* Title, Search, and Categories */}
+          <div className="pt-2 pb-6 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter">
               Emoji Explorer
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
               Browse {allEmojis.length} emojis across {EMOJI_CATEGORIES.length} categories.
             </p>
-          </div>
-
-          <div className="max-w-lg mx-auto mb-2">
-            <Input
-              type="text"
-              placeholder="Search by name or description..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <ScrollArea className="w-full whitespace-nowrap">
-            <div className="flex justify-center gap-2 pb-2">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  onClick={() => setSelectedCategory(category)}
-                  size="sm"
-                  className="shrink-0"
-                >
-                  {category}
-                </Button>
-              ))}
+            <div className="max-w-xl mx-auto mt-6 mb-6">
+              <Input
+                type="text"
+                placeholder="Search by name or description..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="h-12 text-center rounded-lg text-base"
+              />
             </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+            <ScrollArea className="w-full whitespace-nowrap">
+              <div className="flex justify-center gap-2 pb-2">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    onClick={() => setSelectedCategory(category)}
+                    className="shrink-0 rounded-lg"
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </div>
         </div>
       </div>
 
-      {/* Main content area, with adjusted padding-top to offset the sticky header */}
-      <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 pt-[80px]">
+      {/* Main content area */}
+      <main className="px-4 sm:px-6 md:px-8 py-8">
         <div className="max-w-7xl mx-auto">
           {isIsraelSearch ? (
             <div className="mt-8 flex justify-center p-4">
@@ -288,7 +287,7 @@ export default function DiscoverPage() {
             </>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
