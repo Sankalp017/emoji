@@ -260,29 +260,29 @@ export function EmojiWorldGame() {
                 transition={{ duration: 0.3 }}
                 className="w-full flex flex-col items-center"
               >
-                <Card className="w-full max-w-lg text-center p-6 sm:p-8 bg-card/50 backdrop-blur-sm border border-white/10">
+                <Card className="w-full max-w-lg text-center p-4 sm:p-6 bg-card/50 backdrop-blur-sm border border-white/10">
                   <CardHeader className="p-0">
-                    <div className="flex items-center gap-4 w-full mb-6">
-                      <div className="flex items-center gap-2 text-lg font-semibold font-mono text-muted-foreground">
-                        <Timer className="h-6 w-6" />
+                    <div className="flex items-center gap-2 sm:gap-4 w-full mb-4 sm:mb-6">
+                      <div className="flex items-center gap-2 text-md sm:text-lg font-semibold font-mono text-muted-foreground">
+                        <Timer className="h-5 sm:h-6 w-5 sm:h-6" />
                         <span>{timeLeft.toFixed(1)}</span>
                       </div>
-                      <Progress value={(timeLeft / ROUND_DURATION) * 100} className="h-3 w-full" />
+                      <Progress value={(timeLeft / ROUND_DURATION) * 100} className="h-2 sm:h-3 w-full" />
                     </div>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <div className="my-8">
-                      <p className="text-9xl">{currentEmoji.char}</p>
+                    <div className="my-4 sm:my-8">
+                      <p className="text-8xl sm:text-9xl">{currentEmoji.char}</p>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       {options.map((option, index) => (
                         <Button
                           key={option}
                           onClick={() => handleAnswer(option)}
-                          className={`w-full h-auto min-h-[6rem] text-lg font-semibold whitespace-normal transition-all duration-300 relative focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-4 text-center flex items-center justify-center ${getButtonClass(option)}`}
+                          className={`w-full h-auto min-h-[5rem] sm:min-h-[6rem] text-md sm:text-lg font-semibold whitespace-normal transition-all duration-300 relative focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-3 sm:p-4 text-center flex items-center justify-center ${getButtonClass(option)}`}
                           disabled={!!selectedAnswer}
                         >
-                          <span className="absolute top-2 left-3 text-sm font-bold opacity-50">{index + 1}</span>
+                          <span className="absolute top-2 left-3 text-xs sm:text-sm font-bold opacity-50">{index + 1}</span>
                           {option}
                         </Button>
                       ))}
@@ -300,7 +300,7 @@ export function EmojiWorldGame() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-center flex flex-col items-center gap-4 z-10 p-4 pt-16 sm:pt-24"
+            className="text-center flex flex-col items-center gap-4 z-10 p-4"
           >
             <h1 className="text-6xl md:text-7xl font-bold tracking-tighter bg-gradient-to-br from-primary via-primary/80 to-primary bg-clip-text text-transparent dark:from-primary dark:via-primary/60 dark:to-primary">
               Emoji World
@@ -316,7 +316,7 @@ export function EmojiWorldGame() {
                 >
                   <motion.span 
                     className="text-6xl mb-4"
-                    animate={{ rotate: [-5, 5, -5] }}
+                    animate={{ rotate: [-5, 5] }}
                     transition={{ duration: 1.5, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
                   >
                     🎮
@@ -330,7 +330,7 @@ export function EmojiWorldGame() {
                   <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10">
                     <motion.span 
                       className="text-6xl mb-4"
-                      animate={{ scale: [1, 1.1, 1] }}
+                      animate={{ scale: [1, 1.1] }}
                       transition={{ duration: 2, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
                     >
                       🔍
@@ -345,7 +345,7 @@ export function EmojiWorldGame() {
                   <Card className="h-full cursor-pointer flex flex-col items-center justify-center text-center p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-primary/20 border border-white/10">
                     <motion.span 
                       className="text-6xl mb-4"
-                      animate={{ y: [-3, 3, -3] }}
+                      animate={{ y: [-3, 3] }}
                       transition={{ duration: 2.5, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
                     >
                       📜
@@ -362,29 +362,33 @@ export function EmojiWorldGame() {
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen text-foreground p-4 overflow-hidden transition-colors duration-500 ${
+    <div className={`flex flex-col min-h-screen text-foreground transition-colors duration-500 ${
       flash === 'correct' ? 'bg-green-500/20' : flash === 'wrong' ? 'bg-red-500/20' : 'bg-background bg-gradient-to-br from-background to-muted/30'
     }`}>
-      <div className="absolute top-4 right-4 z-20">
-        <ThemeToggle />
-      </div>
-      <div className="absolute top-4 left-4 flex items-center gap-4 z-20">
-        {gameState === 'playing' && (
-          <Button onClick={goToMainMenu} variant="outline">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-        )}
-        <div className="text-2xl font-semibold">
-          <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
-            <Award className="h-7 w-7 text-yellow-400" />
-            <AnimatedStat value={score} />
-          </motion.div>
+      <header className="fixed top-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-lg border-b border-border/50">
+        <div className="w-full max-w-5xl mx-auto flex items-center justify-between p-4">
+          <div className="flex items-center gap-4">
+            {gameState === 'playing' && (
+              <Button onClick={goToMainMenu} variant="outline" size="sm">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Menu
+              </Button>
+            )}
+            <div className="text-xl sm:text-2xl font-semibold">
+              <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
+                <Award className="h-6 sm:h-7 w-6 sm:h-7 text-yellow-400" />
+                <AnimatedStat value={score} />
+              </motion.div>
+            </div>
+          </div>
+          <ThemeToggle />
         </div>
-      </div>
-      <main className="flex-grow flex items-center justify-center w-full">
+      </header>
+      
+      <main className="flex-grow flex items-center justify-center w-full pt-24 pb-4 px-4">
         {renderGameState()}
       </main>
+
       {gameState === 'start' && (
         <footer className="p-4 text-center text-sm text-muted-foreground">
           Made with ❤️ by Sankalp Dharge
