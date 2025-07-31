@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Award, BarChart, Crown, ArrowLeft, Timer } from 'lucide-react';
+import { Trophy, BarChart, Crown, ArrowLeft, Timer } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const ROUND_DURATION = 5;
@@ -215,7 +215,7 @@ export function EmojiWorldGame() {
                   animate={{ scale: 1, rotate: [0, 10, -10, 0] }} 
                   transition={{ duration: 0.8, ease: "easeInOut", delay: 0.2 }}
                 >
-                  <Award className="h-24 w-24 mx-auto text-yellow-400" />
+                  <Trophy className="h-24 w-24 mx-auto text-yellow-400" />
                 </motion.div>
                 <CardTitle className="text-5xl font-bold mt-4">Game Over</CardTitle>
                 <CardDescription className="text-lg">
@@ -376,7 +376,7 @@ export function EmojiWorldGame() {
             )}
             <div className="text-xl sm:text-2xl font-semibold">
               <motion.div whileTap={{ scale: 0.9 }} className="flex items-center gap-2">
-                <Award className="h-6 sm:h-7 w-6 sm:h-7 text-yellow-400" />
+                <Trophy className="h-6 sm:h-7 w-6 sm:h-7 text-yellow-400" />
                 <AnimatedStat value={score} />
               </motion.div>
             </div>
