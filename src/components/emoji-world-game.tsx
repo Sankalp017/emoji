@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { useSound } from '@/hooks/use-sound';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Award, BarChart, Crown, ArrowLeft } from 'lucide-react';
+import { Award, BarChart, Crown, ArrowLeft, Timer } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const ROUND_DURATION = 5;
@@ -39,7 +39,6 @@ export function EmojiWorldGame() {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [flash, setFlash] = useState<'correct' | 'wrong' | null>(null);
   const [usedEmojis, setUsedEmojis] = useState<string[]>([]);
-  const [isTimeUp, setIsTimeUp] = useState(false);
 
   const { playCorrect, playWrong, playStart, playGameOver } = useSound();
 
@@ -56,16 +55,15 @@ export function EmojiWorldGame() {
   }, []);
 
   useEffect(() => {
-    if (gameState === 'gameOver' && score > 0) {
+    if (gameState === 'gameOver' && score > 0 && score >= highScore) {
       triggerConfetti();
     }
-  }, [gameState, score, triggerConfetti]);
+  }, [gameState, score, highScore, triggerConfetti]);
 
   const nextRound = useCallback(() => {
     setIsCorrect(null);
     setSelectedAnswer(null);
     setFlash(null);
-    setIsTimeUp(false);
 
     let availableEmojis = EMOJIS.filter(e => !usedEmojis.includes(e.char));
 
@@ -125,9 +123,7 @@ export function EmojiWorldGame() {
       playWrong();
       setIsCorrect(false);
       setFlash('wrong');
-      if (answer === null) {
-        setIsTimeUp(true);
-      } else {
+      if (answer !== null) {
         toast.error("Oops!", { duration: 1000 });
       }
       setTimeout(() => {
@@ -167,7 +163,6 @@ export function EmojiWorldGame() {
     setFlash(null);
     setUsedEmojis([]);
     setCurrentEmoji(null);
-    setIsTimeUp(false);
     setGameState('playing');
   };
 
@@ -188,89 +183,112 @@ export function EmojiWorldGame() {
     }
   }, [score, highScore]);
 
+  const getButtonClass = (option: string) => {
+    if (!selectedAnswer) {
+      return 'bg-secondary text-secondary-foreground hover:bg-secondary/80';
+    }
+    
+    const isThisButtonSelected = option === selectedAnswer;
+    const isThisButtonCorrect = option === currentEmoji?.name;
+  
+    if (isThisButtonCorrect) {
+      return 'bg-green-500 hover:bg-green-500 text-primary-foreground border-green-600';
+    }
+  
+    if (isThisButtonSelected && !isThisButtonCorrect) {
+      return 'bg-red-500 hover:bg-red-500 text-primary-foreground border-red-600 animate-shake';
+    }
+  
+    return 'bg-secondary/50 text-secondary-foreground/50 border-transparent'; 
+  };
+
   const renderGameState = () => {
     switch (gameState) {
       case 'gameOver':
         const accuracy = questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0;
         return (
           <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
-            <Card className="w-full max-w-md text-center bg-card/80 backdrop-blur-lg border border-white/10 shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-4xl font-bold">Game Over!</CardTitle>
+            <Card className="w-full max-w-md text-center bg-card/80 backdrop-blur-lg border border-white/10 shadow-xl p-4 sm:p-6">
+              <CardHeader className="p-2">
+                <motion.div 
+                  initial={{ scale: 0 }} 
+                  animate={{ scale: 1, rotate: [0, 10, -10, 0] }} 
+                  transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.2 }}
+                >
+                  <Award className="h-24 w-24 mx-auto text-yellow-400" />
+                </motion.div>
+                <CardTitle className="text-5xl font-bold mt-4">Game Over</CardTitle>
+                <CardDescription className="text-lg">
+                  {score > 0 && score >= highScore ? "New High Score!" : "Nice try!"}
+                </CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col items-center gap-4">
-                <div className="text-6xl font-bold text-primary mb-4">{score}</div>
-                <div className="grid grid-cols-2 gap-4 w-full text-lg">
-                  <div className="flex items-center justify-center gap-2 rounded-lg bg-muted/50 p-3">
-                    <Crown className="h-6 w-6 text-yellow-500" />
-                    <span>High Score: {highScore}</span>
+              <CardContent className="flex flex-col items-center gap-4 p-2">
+                <div className="text-7xl font-bold text-primary my-4">{score}</div>
+                <div className="grid grid-cols-2 gap-4 w-full text-md">
+                  <div className="flex flex-col items-center justify-center gap-1 rounded-lg bg-muted/50 p-3">
+                    <span className="text-sm text-muted-foreground">High Score</span>
+                    <div className="flex items-center gap-2 font-semibold">
+                      <Crown className="h-5 w-5 text-yellow-500" />
+                      <span>{highScore}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-center gap-2 rounded-lg bg-muted/50 p-3">
-                    <BarChart className="h-6 w-6 text-blue-500" />
-                    <span>Accuracy: {accuracy}%</span>
+                  <div className="flex flex-col items-center justify-center gap-1 rounded-lg bg-muted/50 p-3">
+                    <span className="text-sm text-muted-foreground">Accuracy</span>
+                    <div className="flex items-center gap-2 font-semibold">
+                      <BarChart className="h-5 w-5 text-blue-500" />
+                      <span>{accuracy}%</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                  <Button onClick={startGame} size="lg">Play Again</Button>
-                  <Button onClick={goToMainMenu} size="lg" variant="outline">Main Menu</Button>
+                <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full">
+                  <Button onClick={startGame} size="lg" className="w-full">Play Again</Button>
+                  <Button onClick={goToMainMenu} size="lg" variant="outline" className="w-full">Main Menu</Button>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
         );
       case 'playing':
-        if (isTimeUp) {
-          return (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center"
-            >
-              <h2 className="text-5xl font-bold text-destructive">Time's Up!</h2>
-            </motion.div>
-          );
-        }
         return (
           <AnimatePresence mode="wait">
             {currentEmoji && (
               <motion.div
                 key={currentEmoji.char}
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="w-full flex flex-col items-center gap-8"
+                className="w-full flex flex-col items-center"
               >
-                <div className="w-full max-w-md">
-                  <Progress value={(timeLeft / ROUND_DURATION) * 100} className="h-4 [&>div]:bg-primary" />
-                </div>
-                
-                <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 1, repeat: Infinity, repeatType: 'mirror' }}
-                  className="text-8xl md:text-9xl"
-                >
-                  {currentEmoji.char}
-                </motion.div>
-
-                <div className="grid grid-cols-2 gap-4 w-full max-w-md">
-                  {options.map((option, index) => (
-                    <motion.div key={option} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button
-                        onClick={() => handleAnswer(option)}
-                        className={`w-full h-24 text-xl font-semibold whitespace-normal transition-colors duration-300 relative focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                          selectedAnswer && option === selectedAnswer
-                            ? isCorrect ? 'bg-green-500 hover:bg-green-600 text-primary-foreground' : 'bg-red-500 hover:bg-red-600 text-primary-foreground animate-shake'
-                            : selectedAnswer && option === currentEmoji.name ? 'bg-green-500 hover:bg-green-600 text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                        }`}
-                        disabled={!!selectedAnswer}
-                      >
-                        <span className="absolute top-1 left-2 text-xs font-bold opacity-50">{index + 1}</span>
-                        {option}
-                      </Button>
-                    </motion.div>
-                  ))}
-                </div>
+                <Card className="w-full max-w-lg text-center p-6 sm:p-8 bg-card/50 backdrop-blur-sm border border-white/10">
+                  <CardHeader className="p-0">
+                    <div className="flex items-center gap-4 w-full mb-6">
+                      <div className="flex items-center gap-2 text-lg font-semibold font-mono text-muted-foreground">
+                        <Timer className="h-6 w-6" />
+                        <span>{timeLeft.toFixed(1)}</span>
+                      </div>
+                      <Progress value={(timeLeft / ROUND_DURATION) * 100} className="h-3 w-full" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="my-8">
+                      <p className="text-9xl">{currentEmoji.char}</p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {options.map((option, index) => (
+                        <Button
+                          key={option}
+                          onClick={() => handleAnswer(option)}
+                          className={`w-full h-auto min-h-[6rem] text-lg font-semibold whitespace-normal transition-all duration-300 relative focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-4 text-center flex items-center justify-center ${getButtonClass(option)}`}
+                          disabled={!!selectedAnswer}
+                        >
+                          <span className="absolute top-2 left-3 text-sm font-bold opacity-50">{index + 1}</span>
+                          {option}
+                        </Button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             )}
           </AnimatePresence>
