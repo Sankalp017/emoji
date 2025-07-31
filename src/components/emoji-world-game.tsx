@@ -168,6 +168,7 @@ export function EmojiWorldGame() {
 
   const goToMainMenu = () => {
     setGameState('start');
+    setFlash(null);
   };
 
   useEffect(() => {
